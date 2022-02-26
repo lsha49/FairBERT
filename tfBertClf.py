@@ -21,7 +21,9 @@ useLabel = 'Multi6' # Multi6
 Corpus = pd.read_csv('data/cleanedAllSenten.csv', encoding='latin-1')
 
 if useLabel == 'Multi6':
-    labelCol = Corpus['Material'].astype(str) + Corpus['Procedural'].astype(str) + Corpus['CourtR'].astype(str) + Corpus['Title'].astype(str) + Corpus['CourtD'].astype(str) + Corpus['Footnotes'].astype(str)
+    labelCol = Corpus['Material'].astype(str) + Corpus['Procedural'].astype(str) + \
+        Corpus['CourtR'].astype(str) + Corpus['Title'].astype(str) + \
+        Corpus['CourtD'].astype(str) + Corpus['Footnotes'].astype(str)
     labelCol = np.where(labelCol == '100000', 0, labelCol)
     labelCol = np.where(labelCol == '010000', 1, labelCol)
     labelCol = np.where(labelCol == '001000', 2, labelCol)
