@@ -13,14 +13,34 @@ from sklearn.metrics import accuracy_score
 from sklearn.metrics import cohen_kappa_score
 from sklearn.metrics import roc_auc_score
 from sklearn.metrics import f1_score
+from imblearn.under_sampling import RandomUnderSampler
 
-# load legal bert model
-tokenizer = AutoTokenizer.from_pretrained("nlpaueb/legal-bert-base-uncased")
-model = AutoModelForSequenceClassification.from_pretrained("test_trainer_multisix", local_files_only=True)
+# load legal bert
+# tokenizer = AutoTokenizer.from_pretrained("nlpaueb/legal-bert-base-uncased")
+# model = AutoModelForSequenceClassification.from_pretrained("test_trainer_multisix", local_files_only=True)
 
-FileName = 'data/cleanedAllSenten.csv'
-Corpus = pd.read_csv(FileName, encoding='latin-1')
-Train_X, Test_X, Train_Y, Test_Y = model_selection.train_test_split(Corpus['text'], Corpus['label'], test_size=0.2, random_state=11)
+# load distil bert
+# tokenizer = DistilBertTokenizerFast.from_pretrained('distilbert-base-uncased')
+
+# load base bert
+tokenizer = AutoTokenizer.from_pretrained("bert-base-cased")
+model = AutoModelForSequenceClassification.from_pretrained("saved_model/test_trainer_demo5/checkpoint-500", local_files_only=True)
+
+Corpus = pd.read_csv('data/casenote_demo_nodup.csv', encoding='latin-1')
+
+# using gender
+# Corpus['gender'] = np.where(Corpus['gender']=='F', 0, 1)
+
+# using language
+Corpus['gender'] = np.where(Corpus['home_language'].str.contains('english', case=False), 1, 0) # native is 1
+
+textCol = Corpus['Content'].to_numpy()
+textCol = np.reshape(textCol,(-1, 1)) 
+genCol = Corpus['gender']
+textCol, genCol = RandomUnderSampler(random_state=11).fit_resample(textCol, genCol) 
+textCol = textCol.flatten()
+
+Train_X, Test_X, Train_Y, Test_Y = model_selection.train_test_split(textCol, genCol, test_size=0.2, random_state=11)
 
 Test_X = Test_X.tolist()
 Test_Y = Test_Y.tolist()
@@ -46,16 +66,22 @@ trainer = Trainer(model=model)
 
 predicted = trainer.predict(test_dataset)
 prediction_logits = predicted[0]
-prediction_probs = tf.nn.softmax(prediction_logits,axis=1).numpy()[:,1]
-print(f'The prediction probs are: {prediction_probs}')
+prediction_probs = tf.nn.softmax(prediction_logits,axis=1).numpy()
+preditedProb1 = prediction_probs[:, 1]
+# print(f'The prediction probs are: {prediction_probs}')
 
-predicted = np.where(prediction_probs > 0.5, 1, 0)
-predictionDataframe = pd.DataFrame(prediction_probs, columns = ['prediction_probs'])
-predictionDataframe['predicted'] = predicted
+predictedLabel = np.argmax(prediction_logits, axis=-1)
+predictionDataframe = pd.DataFrame(preditedProb1, columns = ['prediction_probs1'])
+predictionDataframe['predicted'] = predictedLabel
 predictionDataframe['label'] = Test_Y
 predictionDataframe.to_csv('predicted_clf.csv',index=False)
 
-print("Accuracy Score -> ",accuracy_score(predicted, Test_Y))
-print("Kappa Score -> ",cohen_kappa_score(predicted, Test_Y))
-print("ROC AUC Score -> ", roc_auc_score(Test_Y.astype(str), predictions_rfc_multi, average='weighted', multi_class='ovo'))
-print("F1 Score -> ",f1_score(predicted, Test_Y, average='weighted'))
+# print("Accuracy Score -> ",accuracy_score(predictedLabel, Test_Y))
+# print("Kappa Score -> ",cohen_kappa_score(predictedLabel, Test_Y))
+# print("ROC AUC Score -> ", roc_auc_score(Test_Y.astype(str), predictions_rfc_multi, average='weighted', multi_class='ovo'))
+# print("F1 Score -> ",f1_score(predictedLabel, Test_Y, average='weighted'))
+
+print("Accuracy Score -> ",accuracy_score(predictedLabel, Test_Y))
+print("Kappa Score -> ",cohen_kappa_score(predictedLabel, Test_Y))
+print("AUC Score -> ", roc_auc_score(Test_Y,preditedProb1))
+print("F1 Score -> ",f1_score(predictedLabel, Test_Y, average='weighted'))
