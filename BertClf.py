@@ -20,7 +20,7 @@ from imblearn.under_sampling import RandomUnderSampler
 
 # cleanedAllSenten casenote_demo_nodup_fast casenote_demo_nodup
 # MonashOrigin_text_lang
-Corpus = pd.read_csv('data/MonashOrigin_text_lang.csv', encoding='latin-1')
+Corpus = pd.read_csv('data/casenote_demo_nodup_fast.csv', encoding='latin-1')
 
 # Corpus = Corpus.dropna(subset=['Content'])
 
@@ -38,8 +38,8 @@ Corpus = pd.read_csv('data/MonashOrigin_text_lang.csv', encoding='latin-1')
 #     labelCol = Corpus[useLabel]
 
 # using gender language  
-labelCol = np.where(Corpus['gender']=='F', 0, 1)
-# labelCol = np.where(Corpus['home_language'].str.contains('english', case=False), 1, 0) # native is 1
+# labelCol = np.where(Corpus['gender']=='F', 0, 1)
+labelCol = np.where(Corpus['home_language'].str.contains('english', case=False), 1, 0) # native is 1
 
 
 
@@ -53,8 +53,12 @@ labelCol = np.where(Corpus['gender']=='F', 0, 1)
 # model = DistilBertForSequenceClassification.from_pretrained("distilbert-base-uncased")
 
 # load normal base bert
+# tokenizer = AutoTokenizer.from_pretrained("bert-base-cased")
+# model = AutoModelForSequenceClassification.from_pretrained("bert-base-cased", num_labels=2)
+
+# load further pre-trained bert
 tokenizer = AutoTokenizer.from_pretrained("bert-base-cased")
-model = AutoModelForSequenceClassification.from_pretrained("bert-base-cased", num_labels=2)
+model = AutoModelForSequenceClassification.from_pretrained("saved_model/further_mask_1", num_labels=2, local_files_only=True)
 
 # training parameter, using 1 epoch for quick testing
 # training_args = TrainingArguments(
@@ -69,7 +73,7 @@ model = AutoModelForSequenceClassification.from_pretrained("bert-base-cased", nu
 # )
 
 # default train args
-training_args = TrainingArguments("saved_model/test_trainer_demo6", evaluation_strategy="epoch", num_train_epochs=1)
+training_args = TrainingArguments("saved_model/test_trainer_demo9", evaluation_strategy="epoch", num_train_epochs=1)
 
 # balance dataset to avoid overfitting on the majority class
 textCol = Corpus['Content'].to_numpy()
@@ -77,7 +81,7 @@ textCol = np.reshape(textCol,(-1, 1))
 textCol, labelCol = RandomUnderSampler(random_state=11).fit_resample(textCol, labelCol) 
 textCol = textCol.flatten()
 
-Train_X, Test_X, Train_Y, Test_Y = model_selection.train_test_split(textCol, labelCol, test_size=0.2, random_state=3)
+Train_X, Test_X, Train_Y, Test_Y = model_selection.train_test_split(textCol, labelCol, test_size=0.2, random_state=111)
 
 x_train, x_val, y_train, y_val = model_selection.train_test_split(Train_X, Train_Y, test_size = 0.2, random_state=12)
 
