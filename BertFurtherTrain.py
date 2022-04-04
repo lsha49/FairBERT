@@ -22,7 +22,7 @@ model = BertForPreTraining(config)
 
 dataset = TextDatasetForNextSentencePrediction(
     tokenizer=bert_cased_tokenizer,
-    file_path="data/sample_further_train2.txt",
+    file_path="data/pretrain/forum_10000_filtered.txt",
     block_size = 256
 )
 

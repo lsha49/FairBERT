@@ -34,7 +34,7 @@ import textstat
 
 # MonashOrigin_text_lang
 # casenote_demo_nodup
-FileName = 'data/casenote_demo_nodup.csv'
+FileName = 'data/pretrain/forum_10000_filtered.csv'
 Corpus = pd.read_csv(FileName, encoding='latin-1')
 
 # remove invalid encoding
@@ -52,12 +52,12 @@ for index,entry in enumerate(Corpus['contentCol']):
     sents = sent_tokenize(entry)
     
     if index > 0:
-        with open('data/sample_further_train2.txt', 'a') as f:
+        with open('data/pretrain/forum_10000_filtered_MLM.txt', 'a') as f:
                 f.write("\n")
     
     for sent in sents: 
         sent = sent.replace("   ", "")
-        with open('data/sample_further_train2.txt', 'a') as f:
+        with open('data/pretrain/forum_10000_filtered_MLM.txt', 'a') as f:
             if index > 0:
                 f.write("\n")
             f.write(sent)
