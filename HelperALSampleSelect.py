@@ -32,6 +32,7 @@ import json
 import nltk
 import textstat
 from alipy import ToolBox
+from collections.abc import Iterable
 from alipy.query_strategy import QueryInstanceLAL,QueryInstanceQUIRE,QueryInstanceSPAL
 
 # forum_demographics_filtered
@@ -65,24 +66,38 @@ Corpus.drop('lang', inplace=True, axis=1)
 features = Corpus.replace(np.nan, 0)
 
 
+# original sampling baseline
+# random selection baseline
 
-### QueryInstanceLAL: Expected Error Reduction on a trained regressor
-# alibox = ToolBox(X=features, y=label, query_type='AllLabels', saving_path='')
-# Strategy = alibox.get_query_strategy(strategy_name='QueryInstanceLAL')
-# select_ind = Strategy.select(firstIndList, secondIndList, model=None, batch_size=100)
+# group fairness, equal sampling: random
+# group fairness, equal sampling: representativeness, informativeness
+# group fairness, equal sampling: hardness
 
-### QueryInstanceQUIRE, Representative and informative, QUIRE seems only able to select 1 sample at a time, train must be bigger than unlabelled
-# alibox = ToolBox(X=Corpus, y=labelColLang, query_type='AllLabels', saving_path='')
-# Strategy = alibox.get_query_strategy(train_idx=allIndList, strategy_name='QueryInstanceQUIRE')
-# select_ind = Strategy.select(firstIndList, allIndList)
 
+
+
+### Random select baseline
+
+
+
+
+######### Representativeness
 ### QueryInstanceBMDR, Representative and informative
 # alibox = ToolBox(X=features, y=label)
 # Strategy = alibox.get_query_strategy(strategy_name='QueryInstanceBMDR')
 # select_ind = Strategy.select(firstIndList, secondIndList, batch_size=100)
 
+### QueryInstanceGraphDensity: representativeness
+# alibox = ToolBox(X=features, y=label)
+# Strategy = alibox.get_query_strategy(strategy_name='QueryInstanceGraphDensity', train_idx=allIndList)
+# select_ind = Strategy.select(firstIndList, allIndList, batch_size=100)
 
-### QueryInstanceQBC: Heterogeneity-based, query-by-committee
+
+
+
+
+######### Uncertainty
+### QueryInstanceQBC: Heterogeneity-based, uncertainty-based, query-by-committee
 # alibox = ToolBox(X=features, y=label)
 # Strategy = alibox.get_query_strategy(strategy_name='QueryInstanceQBC')
 # select_ind = Strategy.select(firstIndList, secondIndList, model=None, batch_size=100)
@@ -94,25 +109,25 @@ features = Corpus.replace(np.nan, 0)
 # select_ind = Strategy.select(firstIndList, secondIndList, model=None, batch_size=100)
 
 
+
+
+
+######### ERROR REDUCTION
 ### QueryExpectedErrorReduction: Expected Error reduction
 # alibox = ToolBox(X=features, y=label)
 # Strategy = alibox.get_query_strategy(strategy_name='QueryExpectedErrorReduction')
 # select_ind = Strategy.select(firstIndList, secondIndList, model=None, batch_size=100)
 
-
-### QueryTypeAURO
-# alibox = ToolBox(X=features, y=label)
-# Strategy = alibox.get_query_strategy(strategy_name='QueryTypeAURO')
+### QueryInstanceLAL: Expected Error Reduction on a trained regressor
+# alibox = ToolBox(X=features, y=label, query_type='AllLabels', saving_path='')
+# Strategy = alibox.get_query_strategy(strategy_name='QueryInstanceLAL')
 # select_ind = Strategy.select(firstIndList, secondIndList, model=None, batch_size=100)
 
 
-### QueryInstanceGraphDensity: representativeness
-alibox = ToolBox(X=features, y=label)
-Strategy = alibox.get_query_strategy(strategy_name='QueryInstanceGraphDensity', train_idx=firstIndList)
-select_ind = Strategy.select([0,1], secondIndList, batch_size=100)
 
 
-### QueryInstanceSPAL, Harndess, this is taking too long, may need to be replaced by instance hardness
+#########Hardness 
+# may need to be replaced by instance hardness
 # alibox = ToolBox(X=Corpus, y=labelColLang, query_type='AllLabels', saving_path='')
 # Strategy = alibox.get_query_strategy(strategy_name='QueryInstanceSPAL')
 # select_ind = Strategy.select(firstIndList, allIndList, model=None, batch_size=100)
