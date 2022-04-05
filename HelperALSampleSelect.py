@@ -65,23 +65,37 @@ Corpus.drop('gender', inplace=True, axis=1)
 Corpus.drop('lang', inplace=True, axis=1)
 features = Corpus.replace(np.nan, 0)
 
+### original Baseline
+    # original sampling baseline
 
-# original sampling baseline
-# random selection baseline
+### under-sampled baseline
+    # random selection baseline
 
-# group fairness, equal sampling: random
-# group fairness, equal sampling: representativeness, informativeness
-# group fairness, equal sampling: hardness
+### Fair under-sampled Baseline
+    # Equal sampling with random sample selection
+
+### neutral samples
+### generate a sample pool which are
+    # Hard in demographics + Equal sampling
+    # Uncertain in demographics + Equal sampling 
+
+### group fairness with minimum samples
+### divide samples to demographic groups, based on 350 labeled samples, select 10000 content-label samples in each group
+    # Hard + Representative and informative in content-label
+    # Hard + Error reduction in content-label
+    # Uncertain + Representative and informative in content-label
+    # Uncertain + Error reduction in content-label
 
 
-
+    
+    
 
 ### Random select baseline
+# @todo
 
 
 
-
-######### Representativeness
+######### Representativeness informativeness and Error reduction in content-label
 ### QueryInstanceBMDR, Representative and informative
 # alibox = ToolBox(X=features, y=label)
 # Strategy = alibox.get_query_strategy(strategy_name='QueryInstanceBMDR')
@@ -92,27 +106,6 @@ features = Corpus.replace(np.nan, 0)
 # Strategy = alibox.get_query_strategy(strategy_name='QueryInstanceGraphDensity', train_idx=allIndList)
 # select_ind = Strategy.select(firstIndList, allIndList, batch_size=100)
 
-
-
-
-
-######### Uncertainty
-### QueryInstanceQBC: Heterogeneity-based, uncertainty-based, query-by-committee
-# alibox = ToolBox(X=features, y=label)
-# Strategy = alibox.get_query_strategy(strategy_name='QueryInstanceQBC')
-# select_ind = Strategy.select(firstIndList, secondIndList, model=None, batch_size=100)
-
-
-### QueryInstanceUncertainty: Heterogeneity-based, uncertainty-based, fast
-# alibox = ToolBox(X=features, y=label)
-# Strategy = alibox.get_query_strategy(strategy_name='QueryInstanceUncertainty')
-# select_ind = Strategy.select(firstIndList, secondIndList, model=None, batch_size=100)
-
-
-
-
-
-######### ERROR REDUCTION
 ### QueryExpectedErrorReduction: Expected Error reduction
 # alibox = ToolBox(X=features, y=label)
 # Strategy = alibox.get_query_strategy(strategy_name='QueryExpectedErrorReduction')
@@ -126,11 +119,19 @@ features = Corpus.replace(np.nan, 0)
 
 
 
-#########Hardness 
-# may need to be replaced by instance hardness
-# alibox = ToolBox(X=Corpus, y=labelColLang, query_type='AllLabels', saving_path='')
-# Strategy = alibox.get_query_strategy(strategy_name='QueryInstanceSPAL')
-# select_ind = Strategy.select(firstIndList, allIndList, model=None, batch_size=100)
+######### Uncertainty and Hardness in demographic label
+### QueryInstanceQBC: query-by-committee, fast
+# alibox = ToolBox(X=features, y=label)
+# Strategy = alibox.get_query_strategy(strategy_name='QueryInstanceQBC')
+# select_ind = Strategy.select(firstIndList, secondIndList, model=None, batch_size=100)
+
+### QueryInstanceUncertainty: fast
+# alibox = ToolBox(X=features, y=label)
+# Strategy = alibox.get_query_strategy(strategy_name='QueryInstanceUncertainty')
+# select_ind = Strategy.select(firstIndList, secondIndList, model=None, batch_size=100)
+
+### instance hardness
+# @todo
 
 
 
