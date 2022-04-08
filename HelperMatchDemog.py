@@ -14,69 +14,39 @@ from sklearn.metrics import cohen_kappa_score
 from sklearn.metrics import roc_auc_score
 from sklearn.metrics import f1_score
 
-# forum_10000_filtered
 
-Corpus = pd.read_csv('data/forum_10000_filtered.csv', encoding='latin-1')
-Demo = pd.read_csv('data/forum_demographics.csv', encoding='latin-1')
+Corpus = pd.read_csv('data/forum_units_users_2021_3_init.csv', encoding='latin-1')
+Demo = pd.read_csv('data/student_demographics.csv', encoding='latin-1')
 
+def isfloat(num):
+    try:
+        float(num)
+        return True
+    except ValueError:
+        return False
 
-for index,entry in enumerate(Corpus['index']):
+savedDf = pd.DataFrame()
+for index,entry in enumerate(Corpus['person_id']):
+    skipOuter = False
     for iindex,ientry in enumerate(Demo['person_id']):
-        if int(ientry) == int(entry) and Demo.loc[iindex, 'update_rank'] == 1:
-            Corpus.loc[index, 'gender'] = Demo.loc[iindex, 'sex']
-            Corpus.loc[index, 'home_language'] = Demo.loc[iindex, 'home_language']
-            Corpus.loc[index, 'birth_country'] = Demo.loc[iindex, 'birth_country']
+        if isfloat(entry):
+            if int(float(ientry)) == int(float(entry)) and Demo.loc[iindex, 'update_rank'] == 1:
+                postText = Corpus.loc[index, 'forum_message']
+                if len(str(postText).strip()) < 10: 
+                    skipOuter = True
+                    continue
 
-Corpus.to_csv('data/forum_10000_filtered_demo.csv',index=False)
-
-
-
-
-
-
-
-
-exit()
-
-test_encodings = tokenizer(Test_X, truncation=False, padding=True)
-
-class IMDbDataset(torch.utils.data.Dataset):
-    def __init__(self, encodings, labels):
-        self.encodings = encodings
-        self.labels = labels
-
-    def __getitem__(self, idx):
-        item = {key: torch.tensor(val[idx]) for key, val in self.encodings.items()}
-        item['labels'] = torch.tensor(self.labels[idx])
-        return item
-
-    def __len__(self):
-        return len(self.labels)
-
-test_dataset = IMDbDataset(test_encodings, Test_Y)
+                savedDf.loc[index, 'gender'] = Demo.loc[iindex, 'sex']
+                savedDf.loc[index, 'home_language'] = Demo.loc[iindex, 'home_language']
+                savedDf.loc[index, 'birth_country'] = Demo.loc[iindex, 'birth_country']
+                
+                savedDf.loc[index, 'indexx'] = Corpus.loc[index, 'indexx']
+                savedDf.loc[index, 'person_id'] = Corpus.loc[index, 'person_id']
+                savedDf.loc[index, 'forum_message'] = Corpus.loc[index, 'forum_message']
+                
+                skipOuter = True
+    if skipOuter:
+        continue
 
 
-trainer = Trainer(model=model)
-
-predicted = trainer.predict(test_dataset)
-
-prediction_logits = predicted[0]
-print(prediction_logits)
-prediction_probs = tf.nn.softmax(prediction_logits,axis=1).numpy()[:,1]
-print(f'The prediction probs are: {prediction_probs}')
-
-predicted = np.where(prediction_probs > 0.5, 1, 0)
-
-predictionDataframe = pd.DataFrame(prediction_probs, columns = ['prediction_probs'])
-predictionDataframe['predicted'] = predicted
-predictionDataframe['label'] = Test_Y
-
-predictionDataframe.to_csv('predicted_clf.csv',index=False)
-
-
-
-print("Accuracy Score -> ",accuracy_score(predicted, Test_Y))
-print("Kappa Score -> ",cohen_kappa_score(predicted, Test_Y))
-print("ROC AUC Score -> ",roc_auc_score(predicted, Test_Y))
-# print("ROC AUC Score -> ", roc_auc_score(Test_Y.astype(str), predictions_rfc_multi, average='weighted', multi_class='ovo'))
-print("F1 Score -> ",f1_score(predicted, Test_Y, average='weighted'))
+savedDf.to_csv('data/forum_units_users_2021_3_init_demo.csv',index=False)
