@@ -15,7 +15,7 @@ from sklearn.metrics import roc_auc_score
 from sklearn.metrics import f1_score
 
 
-Corpus = pd.read_csv('data/forum_units_users_2021_3_init.csv', encoding='latin-1')
+Corpus = pd.read_csv('data/forum_units_users_2021_4_init.csv', encoding='latin-1')
 Demo = pd.read_csv('data/student_demographics.csv', encoding='latin-1')
 
 def isfloat(num):
@@ -49,4 +49,4 @@ for index,entry in enumerate(Corpus['person_id']):
         continue
 
 
-savedDf.to_csv('data/forum_units_users_2021_3_init_demo.csv',index=False)
+savedDf.to_csv('data/forum_units_users_2021_4_init_demo.csv',index=False)

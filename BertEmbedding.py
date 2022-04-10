@@ -14,19 +14,12 @@ from sklearn.metrics import cohen_kappa_score
 from sklearn.metrics import roc_auc_score
 from sklearn.metrics import f1_score
 
-# First fine-tune the model with 80% data 
+# load base bert
+tokenizer = AutoTokenizer.from_pretrained("bert-base-cased")
+model = AutoModelForSequenceClassification.from_pretrained("bert-base-cased", num_labels=2)
 
-# Then, use the fine-tuned model to generate embedding of the 20% test data
-
-# last pass the test data embedding to classify
-
-
-# legal bert model
-tokenizer = AutoTokenizer.from_pretrained("nlpaueb/legal-bert-base-uncased")
-model = AutoModelForSequenceClassification.from_pretrained("nlpaueb/legal-bert-base-uncased", output_hidden_states=True)
-# model = AutoModelForSequenceClassification.from_pretrained("test_trainer_CourtR", local_files_only=True, output_hidden_states=True)
-
-FileName = 'zcleanedAllSenten_liwc_demo.csv'
+# forum_units_users_2021_1_init_demo
+FileName = 'forum_units_users_2021_1_init_demo.csv'
 Corpus = pd.read_csv(FileName, encoding='latin-1')
 
 for index,entry in enumerate(Corpus['Content']):
@@ -40,6 +33,6 @@ for index,entry in enumerate(Corpus['Content']):
     for iindex,ientry in enumerate(finalEmb):
         Corpus.loc[index, iindex] = str(ientry)
 
-Corpus.to_csv('zCasenote_demo_bert_courtR.csv',index=False)
+Corpus.to_csv('forum_units_users_2021_1_init_demo_embed.csv',index=False)
 
 

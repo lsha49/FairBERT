@@ -65,26 +65,21 @@ Corpus.drop('gender', inplace=True, axis=1)
 Corpus.drop('lang', inplace=True, axis=1)
 features = Corpus.replace(np.nan, 0)
 
-### original Baseline
-    # original sampling baseline
 
-### under-sampled baseline
-    # random selection baseline
+### Baseline
+# no further pre-training  
+# further pre-training original sampling 
+# further pre-training random under-sampling 
 
-### Fair under-sampled Baseline
-    # Equal sampling with random sample selection
+### Fair sampling (worst demo predictability), w/ or w/o demo label
+# Uncertainty
+# Unrepresentativeness and uninformative
+# Low Expected error reduction
 
-### neutral samples
-### generate a sample pool which are
-    # Hard in demographics + Equal sampling
-    # Uncertain in demographics + Equal sampling 
-
-### group fairness with minimum samples
-### divide samples to demographic groups, based on 350 labeled samples, select 10000 content-label samples in each group
-    # Hard + Representative and informative in content-label
-    # Hard + Error reduction in content-label
-    # Uncertain + Representative and informative in content-label
-    # Uncertain + Error reduction in content-label
+### group fairness (best task predictability) => either improve general accuracy or group fairness
+# certainty
+# representativeness and informative
+# high Expected error reduction
 
 
     
@@ -95,7 +90,7 @@ features = Corpus.replace(np.nan, 0)
 
 
 
-######### Representativeness informativeness and Error reduction in content-label
+
 ### QueryInstanceBMDR, Representative and informative
 # alibox = ToolBox(X=features, y=label)
 # Strategy = alibox.get_query_strategy(strategy_name='QueryInstanceBMDR')
@@ -116,10 +111,6 @@ features = Corpus.replace(np.nan, 0)
 # Strategy = alibox.get_query_strategy(strategy_name='QueryInstanceLAL')
 # select_ind = Strategy.select(firstIndList, secondIndList, model=None, batch_size=100)
 
-
-
-
-######### Uncertainty and Hardness in demographic label
 ### QueryInstanceQBC: query-by-committee, fast
 # alibox = ToolBox(X=features, y=label)
 # Strategy = alibox.get_query_strategy(strategy_name='QueryInstanceQBC')
@@ -134,6 +125,11 @@ features = Corpus.replace(np.nan, 0)
 # @todo
 
 
+# labelYG = labelY.astype(str) + labelG.astype(str)
+# under_features, under_labelYG = RandomUnderSampler().fit_resample(features, labelYG) 
+# under_labelYG = pd.Series(Test_GY)
+# under_labelY = under_labelYG.str[0].astype(int)
+# under_labelG = under_labelYG.str[1].astype(int)
 
 
 

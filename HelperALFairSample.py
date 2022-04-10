@@ -34,104 +34,110 @@ import textstat
 from alipy import ToolBox
 from collections.abc import Iterable
 from alipy.query_strategy import QueryInstanceLAL,QueryInstanceQUIRE,QueryInstanceSPAL
+from imblearn.under_sampling import RandomUnderSampler
+from deslib.util.instance_hardness import kdn_score
+from scipy.spatial import distance
 
-# forum_demographics_filtered
-# MonashOrigin_fairness_bert_embed
-FileName = 'data/MonashOrigin_fairness_bert_embed.csv'
-Corpus = pd.read_csv(FileName, encoding='latin-1')
+### Baseline
+# no further pre-training  
+# further pre-training original sampling 
+# further pre-training random under-sampling 
 
-label = np.where(pd.isnull(Corpus['label']), 0, 1)
-labelL = np.where(Corpus['lang'].str.contains('english', case=False), 1, 0) # native is 1
+### Fair sampling (worst demo predictability), w/ or w/o demo label
+# unrepresentative, uncertain
+
+### group fairness (best task predictability) => either improve general accuracy or group fairness
+# representative, certain
+
+
+# XXXXX
+# Monash_fine_tune, MonashOrigin_fairness_bert_embed
+Corpus = pd.read_csv('data/XXXXX.csv', encoding='latin-1')
+FineTuneCorpus = pd.read_csv('data/MonashOrigin_fairness_bert_embed.csv', encoding='latin-1')
+
+
+labelFineY = np.where(pd.isnull(FineTuneCorpus['label']), 0, 1)
+labelFineG = np.where(FineTuneCorpus['gender'] == 'F', 0, 1) 
+# labelFineG = np.where(FineTuneCorpus['lang'].str.contains('english', case=False), 1, 0) # native is 1
+
 labelG = np.where(Corpus['gender'] == 'F', 0, 1) 
+# labelG = np.where(Corpus['lang'].str.contains('english', case=False), 1, 0) # native is 1
 
 
-###### AL strategies select representative samples ######
-allIndList = []
-firstIndList = []
-secondIndList = []
-for i in range(0, len(label)):
-    allIndList = allIndList + [i]
 
-for i in range(0, 1000):
-    firstIndList = firstIndList + [i]
+# get BERT embeddings fine tune samples
+FineTuneCorpus.drop('facaulty', inplace=True, axis=1)
+FineTuneCorpus.drop('label', inplace=True, axis=1)
+FineTuneCorpus.drop('gender', inplace=True, axis=1)
+FineTuneCorpus.drop('lang', inplace=True, axis=1)
+featuresFine = FineTuneCorpus.replace(np.nan, 0)
 
-for i in range(1000, 2000):
-    secondIndList = secondIndList + [i]
-
-# only leave embedding to corpus
-Corpus.drop('facaulty', inplace=True, axis=1)
-Corpus.drop('label', inplace=True, axis=1)
-Corpus.drop('gender', inplace=True, axis=1)
-Corpus.drop('lang', inplace=True, axis=1)
+# get BERT embeddings pre-train samples
 features = Corpus.replace(np.nan, 0)
 
-### original Baseline
-    # original sampling baseline
 
-### under-sampled baseline
-    # random selection baseline
+###### select a small fair task-labelled set for AL-based selection ######
+labelFineYG = np.char.add(labelFineY.astype(str), labelFineG.astype(str))
+taskInd00 = np.where(labelFineYG=='00')[0]
+taskInd01 = np.where(labelFineYG=='01')[0]
+taskInd10 = np.where(labelFineYG=='10')[0]
+taskInd11 = np.where(labelFineYG=='11')[0]
+taskInd00_ran = np.random.choice(taskInd00, size=10, replace=False)
+taskInd01_ran = np.random.choice(taskInd01, size=10, replace=False)
+taskInd10_ran = np.random.choice(taskInd10, size=10, replace=False)
+taskInd11_ran = np.random.choice(taskInd11, size=10, replace=False)
+taskAll = np.concatenate([taskInd00,taskInd01,taskInd10,taskInd11])
+tasklabelledIndList = np.concatenate([taskInd00_ran,taskInd01_ran,taskInd10_ran,taskInd11_ran])
+# taskunlabelledIndList = np.setxor1d(taskAll, tasklabelledIndList)
 
-### Fair under-sampled Baseline
-    # Equal sampling with random sample selection
+# h-bias
+# kdnResult = kdn_score(featuresFine.iloc[tasklabelledIndList], labelFineY[tasklabelledIndList], 5)
+kdnResult = kdn_score(featuresFine, labelFineY, 5)
+KDNlist00 = kdnResult[0][taskInd00_ran]
+KDNlist01 = kdnResult[0][taskInd01_ran]
+KDNlist10 = kdnResult[0][taskInd10_ran]
+KDNlist11 = kdnResult[0][taskInd11_ran]
 
-### neutral samples
-### generate a sample pool which are
-    # Hard in demographics + Equal sampling
-    # Uncertain in demographics + Equal sampling 
+kl_pq0 = distance.jensenshannon(KDNlist00, KDNlist01)
+kl_pq1 = distance.jensenshannon(KDNlist10, KDNlist11)
 
-### group fairness with minimum samples
-### divide samples to demographic groups, based on 350 labeled samples, select 10000 content-label samples in each group
-    # Hard + Representative and informative in content-label
-    # Hard + Error reduction in content-label
-    # Uncertain + Representative and informative in content-label
-    # Uncertain + Error reduction in content-label
+print('H-bias:', (kl_pq0 + kl_pq1)/2)
+
+savedTasklabelledIndList = pd.DataFrame(tasklabelledIndList)
+savedTasklabelledIndList.to_csv('savedTasklabelledIndList.csv',index=False)
 
 
-    
-    
+exit()
+
+
+
+
+###### AL select samples ######
 
 ### Random select baseline
 # @todo
 
 
-
-######### Representativeness informativeness and Error reduction in content-label
-### QueryInstanceBMDR, Representative and informative
+### QueryInstanceQBC: query-by-committee, fast
 # alibox = ToolBox(X=features, y=label)
-# Strategy = alibox.get_query_strategy(strategy_name='QueryInstanceBMDR')
-# select_ind = Strategy.select(firstIndList, secondIndList, batch_size=100)
+# Strategy = alibox.get_query_strategy(strategy_name='QueryInstanceQBC')
+# select_ind = Strategy.select(firstIndList, secondIndList, model=None, batch_size=100)
+
+### QueryInstanceUncertainty: uncertainity, fast
+# alibox = ToolBox(X=features, y=label)
+# Strategy = alibox.get_query_strategy(strategy_name='QueryInstanceUncertainty')
+# select_ind = Strategy.select(firstIndList, secondIndList, model=None, batch_size=100)
 
 ### QueryInstanceGraphDensity: representativeness
 # alibox = ToolBox(X=features, y=label)
 # Strategy = alibox.get_query_strategy(strategy_name='QueryInstanceGraphDensity', train_idx=allIndList)
 # select_ind = Strategy.select(firstIndList, allIndList, batch_size=100)
 
-### QueryExpectedErrorReduction: Expected Error reduction
+### QueryInstanceBMDR, representative and informative
 # alibox = ToolBox(X=features, y=label)
-# Strategy = alibox.get_query_strategy(strategy_name='QueryExpectedErrorReduction')
-# select_ind = Strategy.select(firstIndList, secondIndList, model=None, batch_size=100)
+# Strategy = alibox.get_query_strategy(strategy_name='QueryInstanceBMDR')
+# select_ind = Strategy.select(firstIndList, secondIndList, batch_size=100)
 
-### QueryInstanceLAL: Expected Error Reduction on a trained regressor
-# alibox = ToolBox(X=features, y=label, query_type='AllLabels', saving_path='')
-# Strategy = alibox.get_query_strategy(strategy_name='QueryInstanceLAL')
-# select_ind = Strategy.select(firstIndList, secondIndList, model=None, batch_size=100)
-
-
-
-
-######### Uncertainty and Hardness in demographic label
-### QueryInstanceQBC: query-by-committee, fast
-# alibox = ToolBox(X=features, y=label)
-# Strategy = alibox.get_query_strategy(strategy_name='QueryInstanceQBC')
-# select_ind = Strategy.select(firstIndList, secondIndList, model=None, batch_size=100)
-
-### QueryInstanceUncertainty: fast
-# alibox = ToolBox(X=features, y=label)
-# Strategy = alibox.get_query_strategy(strategy_name='QueryInstanceUncertainty')
-# select_ind = Strategy.select(firstIndList, secondIndList, model=None, batch_size=100)
-
-### instance hardness
-# @todo
 
 
 
