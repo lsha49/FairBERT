@@ -15,12 +15,20 @@ from sklearn.metrics import roc_auc_score
 from sklearn.metrics import f1_score
 
 
-Corpus = pd.read_csv('data/forum_units_users_2021_demo_all.csv', encoding='latin-1')
+Corpus = pd.read_csv('data/forum_5year_demo.csv', encoding='latin-1')
 
-Corpus['forum_message'].replace(r'http\S+', '', regex=True, inplace=True)
-Corpus['forum_message'].replace(r'www\S+', '', regex=True, inplace=True)
+
+ind4 = 0
+
+for index,entry in enumerate(Corpus['person_id']):
+    if 'NON-ENGLISH (NO INFORMATION)' in str(Corpus.loc[index, 'home_language']):  
+        Corpus.loc[index, 'forum_message'] = ''
+        ind4 = ind4 + 1
+    
+
+print(ind4)
 
 Corpus['forum_message'].replace('', np.nan, inplace=True)
 Corpus.dropna(subset=['forum_message'], inplace=True)
 
-Corpus.to_csv('data/forum_units_users_2021_demo_all_post_process.csv',index=False)
+Corpus.to_csv('data/forum_5year_demo_nodup.csv',index=False)

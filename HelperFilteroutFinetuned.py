@@ -34,28 +34,22 @@ import textstat
 
 # MonashOrigin_text_lang
 # casenote_demo_nodup
-FileName = 'data/forum_demographics.csv'
+FileName = 'data/forum_units_users_2019_init5.csv'
 Corpus = pd.read_csv(FileName, encoding='latin-1')
 
-# MonashOrigin_text_demographic is the fine-tuning labelled dataset
-CorpusLabelled = pd.read_csv('data/MonashOrigin_text_demographic.csv', encoding='latin-1')
+# Monash_fine_tune is the fine-tuning labelled dataset
+CorpusLabelled = pd.read_csv('data/Monash_fine_tune.csv', encoding='latin-1')
 shouldNotContainIndex = CorpusLabelled['index'].to_numpy()
 
 
-# remove invalid encoding
-validContentCol = Corpus['forum_post_clean'].str.encode('ascii', 'ignore').str.decode('ascii')
-Corpus['forum_post_clean'] = validContentCol
-
 filteredCorpus = pd.DataFrame()
-for index,entry in enumerate(Corpus['forum_post_clean']):
-    studentId = Corpus.loc[index,'V1']
+for index,entry in enumerate(Corpus['forum_message']):
+    studentId = Corpus.loc[index,'person_id']
     if studentId in shouldNotContainIndex:
-        continue 
-    filteredCorpus.loc[index, 'unit_owning_org_primary'] = Corpus.loc[index, 'unit_owning_org_primary']
-    filteredCorpus.loc[index, 'V1'] = Corpus.loc[index, 'V1']
-    filteredCorpus.loc[index, 'forum_post_clean'] = Corpus.loc[index, 'forum_post_clean']
-    filteredCorpus.loc[index, 'sex'] = Corpus.loc[index, 'sex']
-    filteredCorpus.loc[index, 'lang'] = Corpus.loc[index, 'lang']
+        Corpus.loc[index, 'forum_message'] = ''
         
-filteredCorpus.to_csv('data/forum_demographics_filtered.csv',index=False)
+
+Corpus['forum_message'].replace('', np.nan, inplace=True)
+Corpus.dropna(subset=['forum_message'], inplace=True)
+Corpus.to_csv('data/forum_2019_demo_final.csv',index=False)
 

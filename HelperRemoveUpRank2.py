@@ -15,12 +15,14 @@ from sklearn.metrics import roc_auc_score
 from sklearn.metrics import f1_score
 
 
-Corpus = pd.read_csv('data/forum_units_users_2021_demo_all.csv', encoding='latin-1')
+Corpus = pd.read_csv('data/student_demographics.csv', encoding='latin-1')
 
-Corpus['forum_message'].replace(r'http\S+', '', regex=True, inplace=True)
-Corpus['forum_message'].replace(r'www\S+', '', regex=True, inplace=True)
+for index,entry in enumerate(Corpus['update_rank']):
+    if entry == 2:  
+        Corpus.loc[index, 'update_rank'] = ''
+        
 
-Corpus['forum_message'].replace('', np.nan, inplace=True)
-Corpus.dropna(subset=['forum_message'], inplace=True)
+Corpus['update_rank'].replace('', np.nan, inplace=True)
+Corpus.dropna(subset=['update_rank'], inplace=True)
 
-Corpus.to_csv('data/forum_units_users_2021_demo_all_post_process.csv',index=False)
+Corpus.to_csv('data/student_demographics_no_uprank2.csv',index=False)

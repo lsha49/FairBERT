@@ -15,12 +15,22 @@ from sklearn.metrics import roc_auc_score
 from sklearn.metrics import f1_score
 
 
-Corpus = pd.read_csv('data/forum_units_users_2021_demo_all.csv', encoding='latin-1')
+Corpus = pd.read_csv('data/forum_units_users_2019_init2.csv', encoding='latin-1')
+mapp = Corpus['person_id'].value_counts(dropna=False)
+total = 0
 
-Corpus['forum_message'].replace(r'http\S+', '', regex=True, inplace=True)
-Corpus['forum_message'].replace(r'www\S+', '', regex=True, inplace=True)
+for index,val in mapp.items():
+    total = val + total
+    if val > 20:
+        Corpus['person_id'].replace(index, np.nan, inplace=True)
+        
+        
+Corpus.dropna(subset=['person_id'], inplace=True)
 
-Corpus['forum_message'].replace('', np.nan, inplace=True)
-Corpus.dropna(subset=['forum_message'], inplace=True)
+# print(len(mapp))
 
-Corpus.to_csv('data/forum_units_users_2021_demo_all_post_process.csv',index=False)
+# print(total/len(mapp))
+
+# print(Corpus['person_id'].value_counts(dropna=False))
+
+Corpus.to_csv('data/forum_units_users_2019_init3.csv',index=False)
