@@ -16,23 +16,28 @@ from sklearn.metrics import f1_score
 
 # load base bert
 tokenizer = AutoTokenizer.from_pretrained("bert-base-cased")
-model = AutoModelForSequenceClassification.from_pretrained("bert-base-cased", num_labels=2)
+model = AutoModelForSequenceClassification.from_pretrained("bert-base-cased", output_hidden_states=True)
 
-# forum_units_users_2021_1_init_demo
-FileName = 'forum_units_users_2021_1_init_demo.csv'
-Corpus = pd.read_csv(FileName, encoding='latin-1')
+Corpus = pd.read_csv('data/forum_2021_demo_final.csv', encoding='latin-1')
 
-for index,entry in enumerate(Corpus['Content']):
-    input_ids = torch.tensor(tokenizer.encode(entry)).unsqueeze(0)  
-    outputs = model(input_ids)
+excep = 0
+for index,entry in enumerate(Corpus['forum_message']):
+    try:
+        input_ids = torch.tensor(tokenizer.encode(entry)).unsqueeze(0)  
+        outputs = model(input_ids)
 
-    hidden_states = outputs[1]
-    embedding_output = hidden_states[12].detach().numpy()[0]
-    finalEmb = embedding_output[len(embedding_output)-1]
+        hidden_states = outputs[1]
+        embedding_output = hidden_states[12].detach().numpy()[0]
+        finalEmb = embedding_output[len(embedding_output)-1]
 
-    for iindex,ientry in enumerate(finalEmb):
-        Corpus.loc[index, iindex] = str(ientry)
+        for iindex,ientry in enumerate(finalEmb):
+            Corpus.loc[index, iindex] = str(ientry)
+    except:
+        excep = excep + 1
+        continue
 
-Corpus.to_csv('forum_units_users_2021_1_init_demo_embed.csv',index=False)
+print(excep)
+
+Corpus.to_csv('data/forum_2021_demo_final_embed.csv',index=False)
 
 

@@ -38,16 +38,16 @@ FileName = 'data/pretrain/forum_10000_filtered.csv'
 Corpus = pd.read_csv(FileName, encoding='latin-1')
 
 # remove invalid encoding
-validContentCol = Corpus['Content'].str.encode('ascii', 'ignore').str.decode('ascii')
-Corpus['contentCol'] = validContentCol
+# validContentCol = Corpus['Content'].str.encode('ascii', 'ignore').str.decode('ascii')
+# Corpus['contentCol'] = validContentCol
 
 # translate label col
-labelCol = np.where(Corpus['home_language'].str.contains('english', case=False), 1, 0) # native is 1
-Corpus['labelCol'] = labelCol
+# labelCol = np.where(Corpus['home_language'].str.contains('english', case=False), 1, 0) # native is 1
+# Corpus['labelCol'] = labelCol
 
 
-native = list()
-nonNative = list()
+# native = list()
+# nonNative = list()
 for index,entry in enumerate(Corpus['contentCol']):
     sents = sent_tokenize(entry)
     
