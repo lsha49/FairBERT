@@ -15,15 +15,15 @@ from sklearn.metrics import roc_auc_score
 from sklearn.metrics import f1_score
 
 # load base bert
-tokenizer = AutoTokenizer.from_pretrained("bert-base-cased")
+tokenizer = AutoTokenizer.from_pretrained("bert-base-cased",model_max_length=512)
 model = AutoModelForSequenceClassification.from_pretrained("bert-base-cased", output_hidden_states=True)
 
 Corpus = pd.read_csv('data/forum_2021_demo_final.csv', encoding='latin-1')
 
 excep = 0
 for index,entry in enumerate(Corpus['forum_message']):
-    try:
-        input_ids = torch.tensor(tokenizer.encode(entry)).unsqueeze(0)  
+    # try:
+        input_ids = torch.tensor(tokenizer.encode(entry,truncation=True)).unsqueeze(0)  
         outputs = model(input_ids)
 
         hidden_states = outputs[1]
@@ -32,12 +32,12 @@ for index,entry in enumerate(Corpus['forum_message']):
 
         for iindex,ientry in enumerate(finalEmb):
             Corpus.loc[index, iindex] = str(ientry)
-    except:
-        excep = excep + 1
-        continue
+    # except:
+        # excep = excep + 1
+        # continue
 
 print(excep)
 
-Corpus.to_csv('data/forum_2021_demo_final_embed.csv',index=False)
+Corpus.to_csv('data/forum_2021_demo_final_embed_truncate.csv',index=False)
 
 

@@ -32,9 +32,8 @@ import json
 import nltk
 import textstat
 
-# MonashOrigin_text_lang
-# casenote_demo_nodup
-FileName = 'data/pretrain/forum_10000_filtered.csv'
+
+FileName = 'data/forum_2021_demo_final_small.csv'
 Corpus = pd.read_csv(FileName, encoding='latin-1')
 
 # remove invalid encoding
@@ -48,16 +47,17 @@ Corpus = pd.read_csv(FileName, encoding='latin-1')
 
 # native = list()
 # nonNative = list()
-for index,entry in enumerate(Corpus['contentCol']):
+for index,entry in enumerate(Corpus['forum_message']):
     sents = sent_tokenize(entry)
     
     if index > 0:
-        with open('data/pretrain/forum_10000_filtered_MLM.txt', 'a') as f:
+        with open('data/pretrain/forum_2021_demo_final_small_plm.txt', 'a') as f:
                 f.write("\n")
     
     for sent in sents: 
         sent = sent.replace("   ", "")
-        with open('data/pretrain/forum_10000_filtered_MLM.txt', 'a') as f:
+        sent = sent[:500]
+        with open('data/pretrain/forum_2021_demo_final_small_plm.txt', 'a') as f:
             if index > 0:
                 f.write("\n")
             f.write(sent)

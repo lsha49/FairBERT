@@ -22,7 +22,7 @@ model = BertForPreTraining(config)
 
 dataset = TextDatasetForNextSentencePrediction(
     tokenizer=bert_cased_tokenizer,
-    file_path="data/pretrain/forum_10000_filtered.txt",
+    file_path="data/pretrain/forum_2021_demo_final_small_plm3.txt",
     block_size = 256
 )
 
@@ -35,10 +35,10 @@ data_collator = DataCollatorForLanguageModeling(
 
 
 training_args = TrainingArguments(
-    output_dir= "saved_model/further_3",
+    output_dir= "saved_model/further_test_run",
     overwrite_output_dir=True,
-    num_train_epochs=2,
-    per_gpu_train_batch_size= 16,
+    num_train_epochs=1,
+    per_gpu_train_batch_size=16,
     save_steps=10_000,
     save_total_limit=2,
     prediction_loss_only=True,
