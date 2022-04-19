@@ -33,31 +33,23 @@ import nltk
 import textstat
 
 
-FileName = 'data/forum_2021_demo_final_small.csv'
+# forum_2021_demo_final
+# forum_2021_gender_equal
+# forum_2021_lang_equal
+FileName = 'data/forum_2021_lang_equal.csv'
 Corpus = pd.read_csv(FileName, encoding='latin-1')
 
-# remove invalid encoding
-# validContentCol = Corpus['Content'].str.encode('ascii', 'ignore').str.decode('ascii')
-# Corpus['contentCol'] = validContentCol
-
-# translate label col
-# labelCol = np.where(Corpus['home_language'].str.contains('english', case=False), 1, 0) # native is 1
-# Corpus['labelCol'] = labelCol
-
-
-# native = list()
-# nonNative = list()
 for index,entry in enumerate(Corpus['forum_message']):
     sents = sent_tokenize(entry)
     
     if index > 0:
-        with open('data/pretrain/forum_2021_demo_final_small_plm.txt', 'a') as f:
+        with open('data/pretrain/forum_2021_lang_equal_plm.txt', 'a') as f:
                 f.write("\n")
     
     for sent in sents: 
         sent = sent.replace("   ", "")
         sent = sent[:500]
-        with open('data/pretrain/forum_2021_demo_final_small_plm.txt', 'a') as f:
+        with open('data/pretrain/forum_2021_lang_equal_plm.txt', 'a') as f:
             if index > 0:
                 f.write("\n")
             f.write(sent)
