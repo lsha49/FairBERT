@@ -17,8 +17,12 @@ from sklearn.metrics import f1_score
 # load base bert
 tokenizer = AutoTokenizer.from_pretrained("bert-base-cased",model_max_length=512)
 model = AutoModelForSequenceClassification.from_pretrained("bert-base-cased", output_hidden_states=True)
+# model = AutoModelForSequenceClassification.from_pretrained("saved_model/further_2021_original", output_hidden_states=True, local_files_only=True)
 
-Corpus = pd.read_csv('data/forum_2021_demo_final.csv', encoding='latin-1')
+# forum_2021_demo_final
+# forum_2021_gender_test
+# forum_2021_lang_train
+Corpus = pd.read_csv('data/forum_2021_lang_train.csv', encoding='latin-1')
 
 excep = 0
 for index,entry in enumerate(Corpus['forum_message']):
@@ -38,6 +42,6 @@ for index,entry in enumerate(Corpus['forum_message']):
 
 print(excep)
 
-Corpus.to_csv('data/forum_2021_demo_final_embed_truncate.csv',index=False)
+Corpus.to_csv('data/forum_2021_lang_train_embed_bert_base.csv',index=False)
 
 

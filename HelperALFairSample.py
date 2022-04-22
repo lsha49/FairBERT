@@ -38,6 +38,7 @@ from imblearn.under_sampling import RandomUnderSampler
 from deslib.util.instance_hardness import kdn_score
 from scipy.spatial import distance
 
+
 ### Baseline
 # no further pre-training  
 # further pre-training original sampling 
@@ -50,18 +51,18 @@ from scipy.spatial import distance
 # representative, certain
 
 
-# XXXXX
-# Monash_fine_tune, MonashOrigin_fairness_bert_embed
-Corpus = pd.read_csv('data/XXXXX.csv', encoding='latin-1')
-FineTuneCorpus = pd.read_csv('data/MonashOrigin_fairness_bert_embed.csv', encoding='latin-1')
+# forum_2021_lang_train
+# Monash_fine_tune, Monash_fine_tune_embed
+Corpus = pd.read_csv('data/forum_2021_lang_train_embed_bert_base.csv', encoding='latin-1')
+FineTuneCorpus = pd.read_csv('data/Monash_fine_tune_embed.csv', encoding='latin-1')
 
 
 labelFineY = np.where(pd.isnull(FineTuneCorpus['label']), 0, 1)
-labelFineG = np.where(FineTuneCorpus['gender'] == 'F', 0, 1) 
-# labelFineG = np.where(FineTuneCorpus['lang'].str.contains('english', case=False), 1, 0) # native is 1
+# labelFineG = np.where(FineTuneCorpus['gender'] == 'F', 0, 1) 
+labelFineG = np.where(FineTuneCorpus['lang'].str.contains('english', case=False), 1, 0) # native is 1
 
-labelG = np.where(Corpus['gender'] == 'F', 0, 1) 
-# labelG = np.where(Corpus['lang'].str.contains('english', case=False), 1, 0) # native is 1
+# labelG = np.where(Corpus['gender'] == 'F', 0, 1) 
+labelG = np.where(Corpus['home_language'].str.contains('english', case=False), 1, 0) # native is 1
 
 
 
@@ -82,46 +83,46 @@ taskInd00 = np.where(labelFineYG=='00')[0]
 taskInd01 = np.where(labelFineYG=='01')[0]
 taskInd10 = np.where(labelFineYG=='10')[0]
 taskInd11 = np.where(labelFineYG=='11')[0]
-taskInd00_ran = np.random.choice(taskInd00, size=10, replace=False)
-taskInd01_ran = np.random.choice(taskInd01, size=10, replace=False)
-taskInd10_ran = np.random.choice(taskInd10, size=10, replace=False)
-taskInd11_ran = np.random.choice(taskInd11, size=10, replace=False)
+taskInd00_ran = np.random.choice(taskInd00, size=100, replace=False)
+taskInd01_ran = np.random.choice(taskInd01, size=100, replace=False)
+taskInd10_ran = np.random.choice(taskInd10, size=100, replace=False)
+taskInd11_ran = np.random.choice(taskInd11, size=100, replace=False)
 taskAll = np.concatenate([taskInd00,taskInd01,taskInd10,taskInd11])
 tasklabelledIndList = np.concatenate([taskInd00_ran,taskInd01_ran,taskInd10_ran,taskInd11_ran])
-# taskunlabelledIndList = np.setxor1d(taskAll, tasklabelledIndList)
 
-# h-bias
-# kdnResult = kdn_score(featuresFine.iloc[tasklabelledIndList], labelFineY[tasklabelledIndList], 5)
-kdnResult = kdn_score(featuresFine, labelFineY, 5)
-KDNlist00 = kdnResult[0][taskInd00_ran]
-KDNlist01 = kdnResult[0][taskInd01_ran]
-KDNlist10 = kdnResult[0][taskInd10_ran]
-KDNlist11 = kdnResult[0][taskInd11_ran]
+selectedFineTuneSetFeatures = featuresFine.loc[tasklabelledIndList]
+selectedFineTuneSetLabelFineG = labelFineG[tasklabelledIndList]
 
-kl_pq0 = distance.jensenshannon(KDNlist00, KDNlist01)
-kl_pq1 = distance.jensenshannon(KDNlist10, KDNlist11)
+# print(features);exit()
 
-print('H-bias:', (kl_pq0 + kl_pq1)/2)
-
-savedTasklabelledIndList = pd.DataFrame(tasklabelledIndList)
-savedTasklabelledIndList.to_csv('savedTasklabelledIndList.csv',index=False)
-
-
-exit()
+allSample = np.concatenate([selectedFineTuneSetFeatures,features])
+allLabelG = np.concatenate([selectedFineTuneSetLabelFineG,labelG])
+# kdnResult = kdn_score(featuresFine, labelFineY, 5)
+# KDNlist00 = kdnResult[0][taskInd00_ran]
+# KDNlist01 = kdnResult[0][taskInd01_ran]
+# KDNlist10 = kdnResult[0][taskInd10_ran]
+# KDNlist11 = kdnResult[0][taskInd11_ran]
+# kl_pq0 = distance.jensenshannon(KDNlist00, KDNlist01)
+# kl_pq1 = distance.jensenshannon(KDNlist10, KDNlist11)
+# print('H-bias:', (kl_pq0 + kl_pq1)/2)
+# savedTasklabelledIndList = pd.DataFrame(tasklabelledIndList)
+# savedTasklabelledIndList.to_csv('savedTasklabelledIndList.csv',index=False)
 
 
+
+for i in range(0, 400):
+    labelledSet = firstIndList + [i]
+
+for i in range(401, len(allLabelG)-1):
+    unLabelledSet = secondIndList + [i]
 
 
 ###### AL select samples ######
 
-### Random select baseline
-# @todo
-
-
 ### QueryInstanceQBC: query-by-committee, fast
-# alibox = ToolBox(X=features, y=label)
-# Strategy = alibox.get_query_strategy(strategy_name='QueryInstanceQBC')
-# select_ind = Strategy.select(firstIndList, secondIndList, model=None, batch_size=100)
+alibox = ToolBox(X=features, y=labelG)
+Strategy = alibox.get_query_strategy(strategy_name='QueryInstanceQBC')
+select_ind = Strategy.select(labelledSet, unLabelledSet, model=None, batch_size=10697)
 
 ### QueryInstanceUncertainty: uncertainity, fast
 # alibox = ToolBox(X=features, y=label)
@@ -139,9 +140,10 @@ exit()
 # select_ind = Strategy.select(firstIndList, secondIndList, batch_size=100)
 
 
-
-
-
-
 print(select_ind)
 
+
+
+selectedCorpus = Corpus.loc[select_ind]
+
+selectedCorpus.to_csv('data/forum_2021_lang_qbc.csv',index=False)

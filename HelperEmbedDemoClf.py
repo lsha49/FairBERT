@@ -16,7 +16,10 @@ from sklearn.metrics import f1_score
 from imblearn.under_sampling import RandomUnderSampler
 from sklearn.linear_model import LogisticRegression
 
-Corpus = pd.read_csv('data/forum_2021_demo_final_embed1.csv', encoding='latin-1')
+# forum_2021_demo_final_embed1
+# forum_2021_gender_test_embed_original
+# forum_2021_gender_test_embed_bert_base
+Corpus = pd.read_csv('data/forum_2021_gender_test_embed_bert_base.csv', encoding='latin-1')
 # Corpus['1'].replace('', np.nan, inplace=True)
 # Corpus.dropna(subset=['forum_message'], inplace=True)
 # Corpus.to_csv('data/forum_2021_demo_final_embed1.csv',index=False)
@@ -34,9 +37,7 @@ Corpus.drop('person_id', inplace=True, axis=1)
 Corpus.drop('forum_message', inplace=True, axis=1)
 Corpus = Corpus.replace(np.nan, 0)
 
-# print(Corpus);exit()
-
-Train_X, Test_X, Train_Y, Test_Y = model_selection.train_test_split(Corpus, labelCol, test_size=0.05, random_state=11)
+Train_X, Test_X, Train_Y, Test_Y = model_selection.train_test_split(Corpus, labelCol, test_size=0.2, random_state=11)
 
 lr_clf=LogisticRegression()
 lr_clf.fit(Train_X,Train_Y)
