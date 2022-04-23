@@ -48,7 +48,7 @@ for index,entry in enumerate(Corpus['forum_message']):
     
     for sent in sents: 
         sent = sent.replace("   ", "")
-        sent = sent[:500]
+        sent = sent[:256]
         with open('data/pretrain/forum_2021_lang_equal_plm.txt', 'a') as f:
             if index > 0:
                 f.write("\n")

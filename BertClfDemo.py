@@ -25,7 +25,8 @@ labelCol = np.where(Corpus['gender']=='F', 0, 1)
 
 # load further pre-trained bert
 tokenizer = AutoTokenizer.from_pretrained("bert-base-cased")
-model = AutoModelForSequenceClassification.from_pretrained("saved_model/further_2021_original", num_labels=2, local_files_only=True)
+# model = AutoModelForSequenceClassification.from_pretrained("saved_model/further_2021_equal_test", num_labels=2, local_files_only=True)
+model = AutoModelForSequenceClassification.from_pretrained("bert-base-cased", num_labels=2)
 
 # training parameter, using 1 epoch for quick testing
 # training_args = TrainingArguments(

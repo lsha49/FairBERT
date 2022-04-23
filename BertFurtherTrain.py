@@ -16,22 +16,25 @@ from transformers import BertTokenizer, BertForMaskedLM, BertForPreTraining, Ber
 from transformers import TextDatasetForNextSentencePrediction
 from transformers import DataCollatorForLanguageModeling
 
-config = BertConfig()
-bert_cased_tokenizer = BertTokenizer.from_pretrained("bert-base-uncased")
-model = BertForPreTraining(config)
+
+bert_tokenizer = BertTokenizer.from_pretrained("bert-base-uncased")
+
+# config = BertConfig()
+# model = BertForPreTraining(config)
+model = BertForPreTraining.from_pretrained("bert-base-uncased")
 
 # forum_2021_plm
 # forum_2021_gender_equal_plm
 # forum_2021_lang_equal_plm
 
 dataset = TextDatasetForNextSentencePrediction(
-    tokenizer=bert_cased_tokenizer,
-    file_path="data/pretrain/forum_2021_plm.txt",
+    tokenizer=bert_tokenizer,
+    file_path="data/pretrain/forum_2021_lang_equal_plm1.txt",
     block_size = 256
 )
 
 data_collator = DataCollatorForLanguageModeling(
-    tokenizer=bert_cased_tokenizer, 
+    tokenizer=bert_tokenizer, 
     mlm=True,
     mlm_probability= 0.15
 )
@@ -39,9 +42,9 @@ data_collator = DataCollatorForLanguageModeling(
 
 
 training_args = TrainingArguments(
-    output_dir= "saved_model/further_2021_original",
+    output_dir= "saved_model/further_2021_equal_test_3epo",
     overwrite_output_dir=True,
-    num_train_epochs=6,
+    num_train_epochs=3,
     per_gpu_train_batch_size=16,
     save_steps=10_000,
     save_total_limit=2,
