@@ -17,16 +17,16 @@ from imblearn.under_sampling import RandomUnderSampler
 
 # forum_2021_gender_test
 # forum_2021_lang_test
-Corpus = pd.read_csv('data/forum_2021_gender_test.csv', encoding='latin-1')
+Corpus = pd.read_csv('data/forum_2021_lang_test.csv', encoding='latin-1')
 
 # using gender language  
-labelCol = np.where(Corpus['gender']=='F', 0, 1)
-# labelCol = np.where(Corpus['home_language'].str.contains('english', case=False), 1, 0) # native is 1
+# labelCol = np.where(Corpus['gender']=='F', 0, 1)
+labelCol = np.where(Corpus['home_language'].str.contains('english', case=False), 1, 0) # native is 1
 
 # load further pre-trained bert
 tokenizer = AutoTokenizer.from_pretrained("bert-base-cased")
-# model = AutoModelForSequenceClassification.from_pretrained("saved_model/further_2021_equal_test", num_labels=2, local_files_only=True)
-model = AutoModelForSequenceClassification.from_pretrained("bert-base-cased", num_labels=2)
+model = AutoModelForSequenceClassification.from_pretrained("saved_model/further_2021_equal_test_3epo", num_labels=2, local_files_only=True)
+# model = AutoModelForSequenceClassification.from_pretrained("bert-base-cased", num_labels=2)
 
 # training parameter, using 1 epoch for quick testing
 # training_args = TrainingArguments(
@@ -41,7 +41,7 @@ model = AutoModelForSequenceClassification.from_pretrained("bert-base-cased", nu
 # )
 
 # default train args
-training_args = TrainingArguments("saved_model/further_2021_original_demo_fine_tune", evaluation_strategy="epoch", num_train_epochs=3)
+training_args = TrainingArguments("saved_model/further_2021_original_demo_fine_tune", evaluation_strategy="epoch", num_train_epochs=1)
 
 # balance dataset to avoid overfitting on the majority class
 # textCol = Corpus['forum_message'].to_numpy()
@@ -61,9 +61,9 @@ y_val = y_val.tolist()
 Test_X = Test_X.tolist()
 Test_Y = Test_Y.tolist()
 
-train_encodings = tokenizer(x_train, truncation=True, padding=True, max_length=500)
-val_encodings = tokenizer(x_val, truncation=True, padding=True, max_length=500)
-test_encodings = tokenizer(Test_X, truncation=True, padding=True, max_length=500)
+train_encodings = tokenizer(x_train, truncation=True, padding=True, max_length=256)
+val_encodings = tokenizer(x_val, truncation=True, padding=True, max_length=256)
+test_encodings = tokenizer(Test_X, truncation=True, padding=True, max_length=256)
 
 # this is used for encoding BERT embedding for model training
 class EncodeDataset(torch.utils.data.Dataset):
@@ -90,7 +90,7 @@ trainer = Trainer(model=model, args=training_args, train_dataset=train_dataset, 
 trainer.train()
 
 # save the model
-trainer.save_model()
+# trainer.save_model()
 
 
 # using model to make a prediction

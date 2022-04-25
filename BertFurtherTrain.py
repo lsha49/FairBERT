@@ -42,14 +42,14 @@ data_collator = DataCollatorForLanguageModeling(
 
 
 training_args = TrainingArguments(
-    output_dir= "saved_model/further_2021_equal_test_3epo",
+    output_dir= "saved_model/further_2021_equal_test_1epo",
     overwrite_output_dir=True,
-    num_train_epochs=3,
-    per_gpu_train_batch_size=16,
+    num_train_epochs=1,
+    per_gpu_train_batch_size=8,
     save_steps=10_000,
     save_total_limit=2,
     prediction_loss_only=True,
-    learning_rate=2e-5,
+    learning_rate=2e-6,
 )
 
 trainer = Trainer(

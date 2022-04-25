@@ -74,6 +74,12 @@ FineTuneCorpus.drop('lang', inplace=True, axis=1)
 featuresFine = FineTuneCorpus.replace(np.nan, 0)
 
 # get BERT embeddings pre-train samples
+Corpus.drop('gender', inplace=True, axis=1)
+Corpus.drop('home_language', inplace=True, axis=1)
+Corpus.drop('birth_country', inplace=True, axis=1)
+Corpus.drop('indexx', inplace=True, axis=1)
+Corpus.drop('person_id', inplace=True, axis=1)
+Corpus.drop('forum_message', inplace=True, axis=1)
 features = Corpus.replace(np.nan, 0)
 
 
@@ -109,18 +115,19 @@ allLabelG = np.concatenate([selectedFineTuneSetLabelFineG,labelG])
 # savedTasklabelledIndList.to_csv('savedTasklabelledIndList.csv',index=False)
 
 
-
+labelledSet = []
+unLabelledSet = []
 for i in range(0, 400):
-    labelledSet = firstIndList + [i]
+    labelledSet = labelledSet + [i]
 
 for i in range(401, len(allLabelG)-1):
-    unLabelledSet = secondIndList + [i]
+    unLabelledSet = unLabelledSet + [i]
 
 
 ###### AL select samples ######
 
 ### QueryInstanceQBC: query-by-committee, fast
-alibox = ToolBox(X=features, y=labelG)
+alibox = ToolBox(X=allSample, y=allLabelG)
 Strategy = alibox.get_query_strategy(strategy_name='QueryInstanceQBC')
 select_ind = Strategy.select(labelledSet, unLabelledSet, model=None, batch_size=10697)
 

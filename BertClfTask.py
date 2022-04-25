@@ -1,6 +1,6 @@
 from transformers import AutoTokenizer, AutoModel, DistilBertForSequenceClassification
-from transformers import TrainingArguments
-from transformers import Trainer, AutoModelForSequenceClassification
+from transformers import TrainingArguments, BertTokenizer
+from transformers import Trainer, AutoModelForSequenceClassification, BertForSequenceClassification
 from transformers import DistilBertTokenizerFast
 import pandas as pd
 import numpy as np
@@ -13,20 +13,19 @@ from sklearn.metrics import accuracy_score
 from sklearn.metrics import cohen_kappa_score
 from sklearn.metrics import roc_auc_score
 from sklearn.metrics import f1_score
+from abroca import *
 from imblearn.under_sampling import RandomUnderSampler
 
 # forum_2021_gender_test
 # forum_2021_lang_test
 # Monash_fine_tune
-Corpus = pd.read_csv('data/Monash_fine_tune.csv', encoding='latin-1')
-
-# using gender language  
-# labelCol = np.where(Corpus['gender']=='F', 0, 1)
-# labelCol = np.where(Corpus['home_language'].str.contains('english', case=False), 1, 0) # native is 1
+# Monash_fine_tune_clean
+Corpus = pd.read_csv('data/Monash_fine_tune_clean.csv', encoding='latin-1')
 
 # load further pre-trained bert
 tokenizer = AutoTokenizer.from_pretrained("bert-base-cased")
-model = AutoModelForSequenceClassification.from_pretrained("saved_model/further_2021_equal_test", num_labels=2, local_files_only=True)
+# model = AutoModelForSequenceClassification.from_pretrained("saved_model/further_2021_lang_equal_mlm_manual", num_labels=2, local_files_only=True)
+model = BertForSequenceClassification.from_pretrained("saved_model/further_2021_lang_equal_mlm_manual", num_labels=2)
 # model = AutoModelForSequenceClassification.from_pretrained("bert-base-cased", num_labels=2)
 
 # training parameter, using 1 epoch for quick testing
@@ -44,13 +43,15 @@ training_args = TrainingArguments(
 # default train args
 # training_args = TrainingArguments("saved_model/further_2021_original_demo_fine_tune", evaluation_strategy="epoch", num_train_epochs=3)
 
-# balance dataset to avoid overfitting on the majority class
-# textCol = Corpus['forum_message'].to_numpy()
-# textCol = np.reshape(textCol,(-1, 1)) 
-# textCol, labelCol = RandomUnderSampler(random_state=11).fit_resample(textCol, labelCol) 
-# textCol = textCol.flatten()
+Corpus['gender'] = np.where(Corpus['gender']=='F', 0, 1)
+Corpus['home_language'] = np.where(Corpus['home_language'].str.contains('english', case=False), 1, 0) # native is 1
 
-Train_X, Test_X, Train_Y, Test_Y = model_selection.train_test_split(Corpus['Content'], Corpus['label'], test_size=0.2, random_state=111)
+Train, Test, Train_Y, Test_Y = model_selection.train_test_split(Corpus, Corpus['label'], test_size=0.2, random_state=111)
+
+Train_X = Train['Content']
+Test_X = Test['Content']
+Test_G = Test['gender']
+Test_L = Test['home_language']
 
 x_train, x_val, y_train, y_val = model_selection.train_test_split(Train_X, Train_Y, test_size = 0.2, random_state=12)
 
@@ -91,7 +92,7 @@ trainer = Trainer(model=model, args=training_args, train_dataset=train_dataset, 
 trainer.train()
 
 # save the model
-trainer.save_model()
+# trainer.save_model()
 
 
 # using model to make a prediction
@@ -106,12 +107,21 @@ print(predictedLabel)
 
 print("Accuracy Score -> ",accuracy_score(predictedLabel, Test_Y))
 print("Kappa Score -> ",cohen_kappa_score(predictedLabel, Test_Y))
-print("AUC Score -> ", roc_auc_score(Test_Y,preditedProb1))
+print("AUC Score -> ", roc_auc_score(Test_Y,predictedLabel)) # preditedProb1
 print("F1 Score -> ",f1_score(predictedLabel, Test_Y, average='weighted'))
 
-# output metrics
-# print("Accuracy Score -> ",accuracy_score(preditedProb1, Test_Y))
-# print("Kappa Score -> ",cohen_kappa_score(preditedProb1, Test_Y))
-# print("ROC AUC Score -> ",roc_auc_score(preditedProb1, Test_Y))
-# # print("ROC AUC Score -> ", roc_auc_score(Test_Y, prediction_probs, average='weighted', multi_class='ovo'))
-# print("F1 Score -> ",f1_score(preditedProb1, Test_Y, average='weighted'))
+# ABROCA computation
+abrocaDf = pd.DataFrame(predictedLabel, columns = ['predicted'])
+abrocaDf['prob_1'] = pd.DataFrame(prediction_probs)[1]
+abrocaDf['label'] = Test_Y
+abrocaDf['demo'] = Test_L.astype(str)
+
+slice = compute_abroca(abrocaDf, 
+                        pred_col = 'prob_1' , 
+                        label_col = 'label', 
+                        protected_attr_col = 'demo',
+                        majority_protected_attr_val = '1',
+                        compare_type = 'binary', # binary, overall, etc...
+                        n_grid = 10000,
+                        plot_slices = False)    
+print(slice)
