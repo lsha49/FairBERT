@@ -73,6 +73,8 @@ FineTuneCorpus.drop('gender', inplace=True, axis=1)
 FineTuneCorpus.drop('lang', inplace=True, axis=1)
 featuresFine = FineTuneCorpus.replace(np.nan, 0)
 
+originalCorpus = Corpus.copy()
+
 # get BERT embeddings pre-train samples
 Corpus.drop('gender', inplace=True, axis=1)
 Corpus.drop('home_language', inplace=True, axis=1)
@@ -97,11 +99,14 @@ taskAll = np.concatenate([taskInd00,taskInd01,taskInd10,taskInd11])
 tasklabelledIndList = np.concatenate([taskInd00_ran,taskInd01_ran,taskInd10_ran,taskInd11_ran])
 
 selectedFineTuneSetFeatures = featuresFine.loc[tasklabelledIndList]
+selectedFineTuneSetLabelFineY = labelFineY[tasklabelledIndList]
 selectedFineTuneSetLabelFineG = labelFineG[tasklabelledIndList]
+
 
 # print(features);exit()
 
 allSample = np.concatenate([selectedFineTuneSetFeatures,features])
+allLabelT = np.concatenate([selectedFineTuneSetLabelFineY,labelG])
 allLabelG = np.concatenate([selectedFineTuneSetLabelFineG,labelG])
 # kdnResult = kdn_score(featuresFine, labelFineY, 5)
 # KDNlist00 = kdnResult[0][taskInd00_ran]
@@ -123,17 +128,39 @@ for i in range(0, 400):
 for i in range(401, len(allLabelG)-1):
     unLabelledSet = unLabelledSet + [i]
 
+corpusIndices = []
+for i in range(len(Corpus)):
+    corpusIndices.append(i)
 
 ###### AL select samples ######
 
 ### QueryInstanceQBC: query-by-committee, fast
-alibox = ToolBox(X=allSample, y=allLabelG)
+alibox = ToolBox(X=allSample, y=allLabelT) # select task-informative samples
 Strategy = alibox.get_query_strategy(strategy_name='QueryInstanceQBC')
-select_ind = Strategy.select(labelledSet, unLabelledSet, model=None, batch_size=10697)
+select_ind_task = Strategy.select(labelledSet, unLabelledSet, model=None, batch_size=50000)
+
+alibox = ToolBox(X=allSample, y=allLabelG) # select demo-uninformative samples
+Strategy = alibox.get_query_strategy(strategy_name='QueryInstanceQBC')
+select_ind_demo_un = Strategy.select(labelledSet, unLabelledSet, model=None, batch_size=150000)
+
+# 10000
+select_ind_demo = list(set(corpusIndices) - set(select_ind_demo_un))
+
+selected_ind = np.intersect1d(select_ind_demo, select_ind_task); print(len(selected_ind))
+
+selected_ind = selected_ind[:10000]
+
+# print(len(selected_ind));exit()
+
 
 ### QueryInstanceUncertainty: uncertainity, fast
-# alibox = ToolBox(X=features, y=label)
+# alibox = ToolBox(X=features, y=label, measure='least_confident')
 # Strategy = alibox.get_query_strategy(strategy_name='QueryInstanceUncertainty')
+# select_ind = Strategy.select(firstIndList, secondIndList, model=None, batch_size=100)
+
+### QueryExpectedErrorReduction: Expected Error reduction
+# alibox = ToolBox(X=features, y=label)
+# Strategy = alibox.get_query_strategy(strategy_name='QueryExpectedErrorReduction')
 # select_ind = Strategy.select(firstIndList, secondIndList, model=None, batch_size=100)
 
 ### QueryInstanceGraphDensity: representativeness
@@ -141,16 +168,21 @@ select_ind = Strategy.select(labelledSet, unLabelledSet, model=None, batch_size=
 # Strategy = alibox.get_query_strategy(strategy_name='QueryInstanceGraphDensity', train_idx=allIndList)
 # select_ind = Strategy.select(firstIndList, allIndList, batch_size=100)
 
+### QueryInstanceLAL: Expected Error Reduction on a trained regressor
+# alibox = ToolBox(X=features, y=label, query_type='AllLabels', saving_path='')
+# Strategy = alibox.get_query_strategy(strategy_name='QueryInstanceLAL')
+# select_ind = Strategy.select(firstIndList, secondIndList, model=None, batch_size=100)
+
 ### QueryInstanceBMDR, representative and informative
 # alibox = ToolBox(X=features, y=label)
 # Strategy = alibox.get_query_strategy(strategy_name='QueryInstanceBMDR')
 # select_ind = Strategy.select(firstIndList, secondIndList, batch_size=100)
 
 
-print(select_ind)
+# print(selected_ind)
 
 
 
-selectedCorpus = Corpus.loc[select_ind]
+selectedCorpus = originalCorpus.loc[selected_ind]
 
 selectedCorpus.to_csv('data/forum_2021_lang_qbc.csv',index=False)

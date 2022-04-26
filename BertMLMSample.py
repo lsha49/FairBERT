@@ -33,21 +33,20 @@ import nltk
 import textstat
 import re
 from random import randrange
+from nltk.corpus import wordnet
+
 
 # forum_2021_demo_final
 # forum_2021_gender_equal
 # forum_2021_lang_equal
-FileName = 'data/forum_2021_lang_equal.csv'
+FileName = 'data/forum_2021_lang_train.csv'
 Corpus = pd.read_csv(FileName, encoding='latin-1')
 
 
-
+newCorpus = pd.DataFrame()
+newIndex = 0
 for index,entry in enumerate(Corpus['forum_message']):
     sents = sent_tokenize(entry)
-    
-    # if index > 0:
-        # with open('data/pretrain/forum_2021_lang_equal_MLM.txt', 'a') as f:
-                # f.write("\n")
     
     for sent in sents: 
         sent = sent.replace("   ", "")
@@ -62,7 +61,7 @@ for index,entry in enumerate(Corpus['forum_message']):
         newWordsMasked = ''
         newWordsOrig = ''
         for word in words:
-            if word.isalpha() and len(word) > 3 and randrange(10) == 1 and masked == False:
+            if word.isalpha() and len(word) > 3 and randrange(10) == 1 and masked == False and wordnet.synsets(word):
                 toWrite = ' [MASK]'  
                 toWriteOriginal = ' ' + word
                 masked = True 
@@ -75,17 +74,31 @@ for index,entry in enumerate(Corpus['forum_message']):
             # sent = sent[:256]
             newWordsMasked = newWordsMasked + toWrite
             newWordsOrig = newWordsOrig + toWriteOriginal
-        Corpus.loc[index,'masked'] = newWordsMasked
-        Corpus.loc[index,'original'] = newWordsOrig
+        
+        newCorpus.loc[newIndex,'gender'] = Corpus.loc[index,'gender']
+        newCorpus.loc[newIndex,'home_language'] = Corpus.loc[index,'home_language']
+        newCorpus.loc[newIndex,'indexx'] = Corpus.loc[index,'indexx']
+        
+        newCorpus.loc[newIndex,'masked'] = newWordsMasked
+        newCorpus.loc[newIndex,'original'] = newWordsOrig
+        
+        newIndex = newIndex + 1
 
-for index,entry in enumerate(Corpus['person_id']):
-    if len(str(Corpus.loc[index, 'masked']).strip()) < 20:  
-        Corpus.loc[index, 'masked'] = ''
+for index,entry in enumerate(newCorpus['indexx']):
+    if len(str(newCorpus.loc[index, 'masked']).strip()) < 50:  
+        newCorpus.loc[index, 'masked'] = ''
+    countAlpha=0
+    for i in str(newCorpus.loc[index, 'masked']).strip():
+        if(i.isalpha()):
+            countAlpha=countAlpha+1
+    if countAlpha < 20:
+        newCorpus.loc[index, 'masked'] = ''
+    
 
-Corpus['masked'].replace('', np.nan, inplace=True)
-Corpus.dropna(subset=['masked'], inplace=True)
+newCorpus['masked'].replace('', np.nan, inplace=True)
+newCorpus.dropna(subset=['masked'], inplace=True)
 
-Corpus.to_csv('data/forum_2021_lang_equal_mask.csv',index=False)
+newCorpus.to_csv('data/pretrain/forum_2021_lang_train_mlm.csv',index=False)
     
 
 

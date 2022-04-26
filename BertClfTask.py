@@ -22,10 +22,11 @@ from imblearn.under_sampling import RandomUnderSampler
 # Monash_fine_tune_clean
 Corpus = pd.read_csv('data/Monash_fine_tune_clean.csv', encoding='latin-1')
 
-# load further pre-trained bert
-tokenizer = AutoTokenizer.from_pretrained("bert-base-cased")
+# bert_base_no_further_train
+tokenizer = BertTokenizer.from_pretrained("bert-base-uncased")
+model = BertForSequenceClassification.from_pretrained("saved_model/further_1", num_labels=2)
 # model = AutoModelForSequenceClassification.from_pretrained("saved_model/further_2021_lang_equal_mlm_manual", num_labels=2, local_files_only=True)
-model = BertForSequenceClassification.from_pretrained("saved_model/further_2021_lang_equal_mlm_manual", num_labels=2)
+# model = BertForSequenceClassification.from_pretrained("bert-base-uncased", num_labels=2) 
 # model = AutoModelForSequenceClassification.from_pretrained("bert-base-cased", num_labels=2)
 
 # training parameter, using 1 epoch for quick testing
@@ -36,8 +37,8 @@ training_args = TrainingArguments(
     per_device_eval_batch_size=8,   # batch size for evaluation
     warmup_steps=100,                # number of warmup steps for learning rate scheduler
     weight_decay=0.01,               # strength of weight decay
-    logging_dir='./logs',            # directory for storing logs
-    logging_steps=1000
+    # logging_dir='./logs',            # directory for storing logs
+    # logging_steps=1000
 )
 
 # default train args
@@ -46,7 +47,7 @@ training_args = TrainingArguments(
 Corpus['gender'] = np.where(Corpus['gender']=='F', 0, 1)
 Corpus['home_language'] = np.where(Corpus['home_language'].str.contains('english', case=False), 1, 0) # native is 1
 
-Train, Test, Train_Y, Test_Y = model_selection.train_test_split(Corpus, Corpus['label'], test_size=0.2, random_state=111)
+Train, Test, Train_Y, Test_Y = model_selection.train_test_split(Corpus, Corpus['label'], test_size=0.2, random_state=11) # 111
 
 Train_X = Train['Content']
 Test_X = Test['Content']
