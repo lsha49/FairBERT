@@ -38,6 +38,7 @@ args = TrainingArguments(
     per_device_train_batch_size=8,
     num_train_epochs=6,
     learning_rate=2e-5,
+    save_strategy='epoch',
 )
 
 class EncodeDataset(torch.utils.data.Dataset):

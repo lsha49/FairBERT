@@ -1,7 +1,6 @@
 from transformers import AutoTokenizer, AutoModel, DistilBertForSequenceClassification
-from transformers import TrainingArguments
-from transformers import Trainer, AutoModelForSequenceClassification
-from transformers import DistilBertTokenizerFast
+from transformers import TrainingArguments, BertTokenizer
+from transformers import Trainer, AutoModelForSequenceClassification, BertForSequenceClassification
 import pandas as pd
 import numpy as np
 from datasets import load_metric
@@ -14,34 +13,36 @@ from sklearn.metrics import cohen_kappa_score
 from sklearn.metrics import roc_auc_score
 from sklearn.metrics import f1_score
 
-# load base bert
-tokenizer = AutoTokenizer.from_pretrained("bert-base-cased",model_max_length=512)
-# model = AutoModelForSequenceClassification.from_pretrained("bert-base-cased", output_hidden_states=True)
-model = AutoModelForSequenceClassification.from_pretrained("saved_model/further_2021_lang_equal_mlm", output_hidden_states=True, local_files_only=True)
+# tokenizer = BertTokenizer.from_pretrained("bert-base-uncased")
+# model = AutoModelForSequenceClassification.from_pretrained("saved_model/further_1/checkpoint-6500", output_hidden_states=True, local_files_only=True)
+# model = BertForSequenceClassification.from_pretrained("saved_model/further_1/checkpoint-6500", output_hidden_states=True)
+# model = BertForSequenceClassification.from_pretrained("bert-base-cased", output_hidden_states=True)
 
-# forum_2021_demo_final
-# forum_2021_gender_test
+tokenizer = AutoTokenizer.from_pretrained("bert-base-cased",model_max_length=512)
+model = AutoModelForSequenceClassification.from_pretrained("bert-base-cased", output_hidden_states=True)
+
+
 # forum_2021_lang_train
-Corpus = pd.read_csv('data/forum_2021_lang_test.csv', encoding='latin-1')
+# forum_2021_lang_test
+# Monash_fine_tune_clean
+Corpus = pd.read_csv('data/Monash_fine_tune_clean.csv', encoding='latin-1')
+
+# Corpus['forum_message'].replace('', np.nan, inplace=True)
+# Corpus = Corpus.dropna(subset=['forum_message'])
 
 excep = 0
 for index,entry in enumerate(Corpus['forum_message']):
-    # try:
-        input_ids = torch.tensor(tokenizer.encode(entry,truncation=True)).unsqueeze(0)  
-        outputs = model(input_ids)
+    input_ids = torch.tensor(tokenizer.encode(entry,truncation=True)).unsqueeze(0)  
+    outputs = model(input_ids)
 
-        hidden_states = outputs[1]
-        embedding_output = hidden_states[12].detach().numpy()[0]
-        finalEmb = embedding_output[len(embedding_output)-1]
+    hidden_states = outputs[1]
+    embedding_output = hidden_states[12].detach().numpy()[0]
+    finalEmb = embedding_output[len(embedding_output)-1]
 
-        for iindex,ientry in enumerate(finalEmb):
-            Corpus.loc[index, iindex] = str(ientry)
-    # except:
-        # excep = excep + 1
-        # continue
+    for iindex,ientry in enumerate(finalEmb):
+        Corpus.loc[index, iindex] = str(ientry)
 
-print(excep)
-
-Corpus.to_csv('data/forum_2021_lang_test_embed_bert_mlm.csv',index=False)
+# Monash_fine_tune_clean_embed
+Corpus.to_csv('data/Monash_fine_tune_clean_embed.csv',index=False)
 
 

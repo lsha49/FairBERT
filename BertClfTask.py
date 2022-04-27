@@ -1,7 +1,6 @@
 from transformers import AutoTokenizer, AutoModel, DistilBertForSequenceClassification
 from transformers import TrainingArguments, BertTokenizer
 from transformers import Trainer, AutoModelForSequenceClassification, BertForSequenceClassification
-from transformers import DistilBertTokenizerFast
 import pandas as pd
 import numpy as np
 from datasets import load_metric
@@ -24,7 +23,7 @@ Corpus = pd.read_csv('data/Monash_fine_tune_clean.csv', encoding='latin-1')
 
 # bert_base_no_further_train
 tokenizer = BertTokenizer.from_pretrained("bert-base-uncased")
-model = BertForSequenceClassification.from_pretrained("saved_model/further_1", num_labels=2)
+model = BertForSequenceClassification.from_pretrained("saved_model/further_qbc/checkpoint-14500", num_labels=2)
 # model = AutoModelForSequenceClassification.from_pretrained("saved_model/further_2021_lang_equal_mlm_manual", num_labels=2, local_files_only=True)
 # model = BertForSequenceClassification.from_pretrained("bert-base-uncased", num_labels=2) 
 # model = AutoModelForSequenceClassification.from_pretrained("bert-base-cased", num_labels=2)
