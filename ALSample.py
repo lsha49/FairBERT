@@ -137,18 +137,37 @@ for i in range(len(Corpus)):
 ### QueryInstanceQBC: query-by-committee, fast
 # alibox = ToolBox(X=allSample, y=allLabelT) # select task-informative samples
 # Strategy = alibox.get_query_strategy(strategy_name='QueryInstanceQBC')
-# select_ind_task = Strategy.select(labelledSet, unLabelledSet, model=None, batch_size=50000)
+# select_ind_task = Strategy.select(labelledSet, unLabelledSet, model=None, batch_size=100000)
 # alibox = ToolBox(X=allSample, y=allLabelG) # select demo-uninformative samples
 # Strategy = alibox.get_query_strategy(strategy_name='QueryInstanceQBC')
-# select_ind_demo_un = Strategy.select(labelledSet, unLabelledSet, model=None, batch_size=150000)
+# select_ind_demo_un = Strategy.select(labelledSet, unLabelledSet, model=None, batch_size=100000)
 
 
 ### QueryInstanceUncertainty: uncertainity, fast
-alibox = ToolBox(X=allSample, y=allLabelT, measure='least_confident')
-Strategy = alibox.get_query_strategy(strategy_name='QueryInstanceUncertainty')
+# alibox = ToolBox(X=allSample, y=allLabelT, measure='least_confident')
+# Strategy = alibox.get_query_strategy(strategy_name='QueryInstanceUncertainty')
+# select_ind_task = Strategy.select(labelledSet, unLabelledSet, model=None, batch_size=50000)
+# alibox = ToolBox(X=allSample, y=allLabelG, measure='least_confident')
+# Strategy = alibox.get_query_strategy(strategy_name='QueryInstanceUncertainty')
+# select_ind_demo_un = Strategy.select(labelledSet, unLabelledSet, model=None, batch_size=150000)
+
+
+### QueryExpectedErrorReduction: Expected Error reduction
+# alibox = ToolBox(X=allSample, y=allLabelT)
+# Strategy = alibox.get_query_strategy(strategy_name='QueryExpectedErrorReduction')
+# select_ind_task = Strategy.select(labelledSet, unLabelledSet, model=None, batch_size=50000)
+# alibox = ToolBox(X=allSample, y=allLabelG)
+# Strategy = alibox.get_query_strategy(strategy_name='QueryExpectedErrorReduction')
+# select_ind_demo_un = Strategy.select(labelledSet, unLabelledSet, model=None, batch_size=150000)
+
+
+
+### QueryExpectedErrorReduction: LAL EER
+alibox = ToolBox(X=allSample, y=allLabelT,query_type='AllLabels')
+Strategy = alibox.get_query_strategy(strategy_name='QueryInstanceLAL')
 select_ind_task = Strategy.select(labelledSet, unLabelledSet, model=None, batch_size=50000)
-alibox = ToolBox(X=allSample, y=allLabelG, measure='least_confident')
-Strategy = alibox.get_query_strategy(strategy_name='QueryInstanceUncertainty')
+alibox = ToolBox(X=allSample, y=allLabelG,query_type='AllLabels')
+Strategy = alibox.get_query_strategy(strategy_name='QueryInstanceLAL')
 select_ind_demo_un = Strategy.select(labelledSet, unLabelledSet, model=None, batch_size=150000)
 
 
@@ -156,7 +175,7 @@ select_ind_demo_un = Strategy.select(labelledSet, unLabelledSet, model=None, bat
 # intercept of task and demo samples of 10000
 select_ind_demo = list(set(corpusIndices) - set(select_ind_demo_un))
 selected_ind = np.intersect1d(select_ind_demo, select_ind_task); print(len(selected_ind))
-selected_ind = selected_ind[:10000]
+selected_ind = selected_ind[:20000]
 
 
 ### QueryExpectedErrorReduction: Expected Error reduction
@@ -184,4 +203,4 @@ selected_ind = selected_ind[:10000]
 
 selectedCorpus = originalCorpus.loc[selected_ind]
 
-selectedCorpus.to_csv('data/forum_2021_lang_confi.csv',index=False)
+selectedCorpus.to_csv('data/forum_2021_lang_lal.csv',index=False)

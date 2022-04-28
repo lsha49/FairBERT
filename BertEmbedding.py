@@ -20,7 +20,7 @@ from sklearn.metrics import f1_score
 
 tokenizer = AutoTokenizer.from_pretrained("bert-base-cased",model_max_length=512)
 # model = AutoModelForSequenceClassification.from_pretrained("bert-base-cased", output_hidden_states=True)
-model = AutoModelForSequenceClassification.from_pretrained("saved_model/further_qbc/checkpoint-1000", output_hidden_states=True)
+model = AutoModelForSequenceClassification.from_pretrained("saved_model/further_confi/checkpoint-10191", output_hidden_states=True)
 
 
 # forum_2021_lang_train
@@ -44,6 +44,6 @@ for index,entry in enumerate(Corpus['forum_message']):
         Corpus.loc[index, iindex] = str(ientry)
 
 # Monash_fine_tune_clean_embed
-Corpus.to_csv('data/embed/Monash_fine_tune_clean_qbc.csv',index=False)
+Corpus.to_csv('data/embed/Monash_fine_tune_clean_confi.csv',index=False)
 
 
