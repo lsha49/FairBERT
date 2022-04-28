@@ -53,8 +53,8 @@ from scipy.spatial import distance
 
 # forum_2021_lang_train
 # Monash_fine_tune, Monash_fine_tune_embed
-Corpus = pd.read_csv('data/forum_2021_lang_train_embed_bert_base.csv', encoding='latin-1')
-FineTuneCorpus = pd.read_csv('data/Monash_fine_tune_embed.csv', encoding='latin-1')
+Corpus = pd.read_csv('data/embed/forum_2021_lang_train_embed_bert_base.csv', encoding='latin-1')
+FineTuneCorpus = pd.read_csv('data/embed/Monash_fine_tune_embed.csv', encoding='latin-1')
 
 
 labelFineY = np.where(pd.isnull(FineTuneCorpus['label']), 0, 1)
@@ -135,28 +135,29 @@ for i in range(len(Corpus)):
 ###### AL select samples ######
 
 ### QueryInstanceQBC: query-by-committee, fast
-alibox = ToolBox(X=allSample, y=allLabelT) # select task-informative samples
-Strategy = alibox.get_query_strategy(strategy_name='QueryInstanceQBC')
-select_ind_task = Strategy.select(labelledSet, unLabelledSet, model=None, batch_size=50000)
-
-alibox = ToolBox(X=allSample, y=allLabelG) # select demo-uninformative samples
-Strategy = alibox.get_query_strategy(strategy_name='QueryInstanceQBC')
-select_ind_demo_un = Strategy.select(labelledSet, unLabelledSet, model=None, batch_size=150000)
-
-# 10000
-select_ind_demo = list(set(corpusIndices) - set(select_ind_demo_un))
-
-selected_ind = np.intersect1d(select_ind_demo, select_ind_task); print(len(selected_ind))
-
-selected_ind = selected_ind[:10000]
-
-# print(len(selected_ind));exit()
+# alibox = ToolBox(X=allSample, y=allLabelT) # select task-informative samples
+# Strategy = alibox.get_query_strategy(strategy_name='QueryInstanceQBC')
+# select_ind_task = Strategy.select(labelledSet, unLabelledSet, model=None, batch_size=50000)
+# alibox = ToolBox(X=allSample, y=allLabelG) # select demo-uninformative samples
+# Strategy = alibox.get_query_strategy(strategy_name='QueryInstanceQBC')
+# select_ind_demo_un = Strategy.select(labelledSet, unLabelledSet, model=None, batch_size=150000)
 
 
 ### QueryInstanceUncertainty: uncertainity, fast
-# alibox = ToolBox(X=features, y=label, measure='least_confident')
-# Strategy = alibox.get_query_strategy(strategy_name='QueryInstanceUncertainty')
-# select_ind = Strategy.select(firstIndList, secondIndList, model=None, batch_size=100)
+alibox = ToolBox(X=allSample, y=allLabelT, measure='least_confident')
+Strategy = alibox.get_query_strategy(strategy_name='QueryInstanceUncertainty')
+select_ind_task = Strategy.select(labelledSet, unLabelledSet, model=None, batch_size=50000)
+alibox = ToolBox(X=allSample, y=allLabelG, measure='least_confident')
+Strategy = alibox.get_query_strategy(strategy_name='QueryInstanceUncertainty')
+select_ind_demo_un = Strategy.select(labelledSet, unLabelledSet, model=None, batch_size=150000)
+
+
+
+# intercept of task and demo samples of 10000
+select_ind_demo = list(set(corpusIndices) - set(select_ind_demo_un))
+selected_ind = np.intersect1d(select_ind_demo, select_ind_task); print(len(selected_ind))
+selected_ind = selected_ind[:10000]
+
 
 ### QueryExpectedErrorReduction: Expected Error reduction
 # alibox = ToolBox(X=features, y=label)
@@ -179,10 +180,8 @@ selected_ind = selected_ind[:10000]
 # select_ind = Strategy.select(firstIndList, secondIndList, batch_size=100)
 
 
-# print(selected_ind)
-
 
 
 selectedCorpus = originalCorpus.loc[selected_ind]
 
-selectedCorpus.to_csv('data/forum_2021_lang_qbc.csv',index=False)
+selectedCorpus.to_csv('data/forum_2021_lang_confi.csv',index=False)

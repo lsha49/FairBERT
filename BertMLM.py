@@ -17,7 +17,7 @@ from transformers import TextDatasetForNextSentencePrediction
 from transformers import DataCollatorForLanguageModeling
 
 
-Corpus = pd.read_csv('data/pretrain/forum_2021_lang_qbc_mlm.csv', encoding='latin-1')
+Corpus = pd.read_csv('data/pretrain/forum_2021_lang_confi_mlm_1.csv', encoding='latin-1')
 
 ### perform BertForMaskedLM only
 tokenizer = BertTokenizer.from_pretrained("bert-base-uncased")
@@ -34,9 +34,9 @@ inputs['labels'] = tokenizer(Corpus['original'].tolist(), return_tensors="pt",  
 # bert_base_no_further_train
 # further_
 args = TrainingArguments(
-    output_dir='saved_model/further_qbc',
+    output_dir='saved_model/further_confi',
     per_device_train_batch_size=8,
-    num_train_epochs=6,
+    num_train_epochs=3,
     learning_rate=2e-5,
     save_strategy='epoch',
 )

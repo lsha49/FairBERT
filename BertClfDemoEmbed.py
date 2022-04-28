@@ -17,26 +17,20 @@ from imblearn.under_sampling import RandomUnderSampler
 from sklearn.cluster import KMeans
 from sklearn.linear_model import LogisticRegression
 
-# forum_2021_gender_test
-# forum_2021_lang_test
-# forum_2021_gender_test_embed_bert_base
-# forum_2021_lang_test_embed_bert_base
-# forum_2021_lang_test_embed_bert_1epoch
-Corpus = pd.read_csv('data/further_2021_lang_equal_mlm.csv', encoding='latin-1')
+# Monash_fine_tune_clean_embed
+Corpus = pd.read_csv('data/embed/Monash_fine_tune_clean_qbc.csv', encoding='latin-1')
 
 # using gender language  
-labelCol = np.where(Corpus['gender']=='F', 0, 1)
-# labelCol = np.where(Corpus['home_language'].str.contains('english', case=False), 1, 0) # native is 1
+# labelCol = np.where(Corpus['gender']=='F', 0, 1)
+labelCol = np.where(Corpus['home_language'].str.contains('english', case=False), 1, 0) # native is 1
 
 Corpus.drop('gender', inplace=True, axis=1)
 Corpus.drop('home_language', inplace=True, axis=1)
-Corpus.drop('birth_country', inplace=True, axis=1)
-Corpus.drop('indexx', inplace=True, axis=1)
-Corpus.drop('person_id', inplace=True, axis=1)
+Corpus.drop('label', inplace=True, axis=1)
 Corpus.drop('forum_message', inplace=True, axis=1)
 Corpus = Corpus.replace(np.nan, 0)
 
-Train_X, Test_X, Train_Y, Test_Y = model_selection.train_test_split(Corpus, labelCol, test_size=0.1, random_state=23)
+Train_X, Test_X, Train_Y, Test_Y = model_selection.train_test_split(Corpus, labelCol, test_size=0.2, random_state=23)
 
 ### kmeans
 # kmeans = KMeans(n_clusters=2, random_state=0).fit(Train_X)

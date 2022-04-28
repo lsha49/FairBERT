@@ -36,10 +36,8 @@ from random import randrange
 from nltk.corpus import wordnet
 
 
-# forum_2021_demo_final
-# forum_2021_gender_equal
 # forum_2021_lang_equal
-FileName = 'data/forum_2021_lang_train.csv'
+FileName = 'data/forum_2021_lang_confi.csv'
 Corpus = pd.read_csv(FileName, encoding='latin-1')
 
 
@@ -98,7 +96,7 @@ for index,entry in enumerate(newCorpus['indexx']):
 newCorpus['masked'].replace('', np.nan, inplace=True)
 newCorpus.dropna(subset=['masked'], inplace=True)
 
-newCorpus.to_csv('data/pretrain/forum_2021_lang_train_mlm.csv',index=False)
+newCorpus.to_csv('data/pretrain/forum_2021_lang_confi_mlm.csv',index=False)
     
 
 

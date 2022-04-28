@@ -19,13 +19,14 @@ from sklearn.metrics import f1_score
 # model = BertForSequenceClassification.from_pretrained("bert-base-cased", output_hidden_states=True)
 
 tokenizer = AutoTokenizer.from_pretrained("bert-base-cased",model_max_length=512)
-model = AutoModelForSequenceClassification.from_pretrained("bert-base-cased", output_hidden_states=True)
+# model = AutoModelForSequenceClassification.from_pretrained("bert-base-cased", output_hidden_states=True)
+model = AutoModelForSequenceClassification.from_pretrained("saved_model/further_qbc/checkpoint-1000", output_hidden_states=True)
 
 
 # forum_2021_lang_train
 # forum_2021_lang_test
 # Monash_fine_tune_clean
-Corpus = pd.read_csv('data/Monash_fine_tune_clean.csv', encoding='latin-1')
+Corpus = pd.read_csv('data/Monash_fine_tune.csv', encoding='latin-1')
 
 # Corpus['forum_message'].replace('', np.nan, inplace=True)
 # Corpus = Corpus.dropna(subset=['forum_message'])
@@ -43,6 +44,6 @@ for index,entry in enumerate(Corpus['forum_message']):
         Corpus.loc[index, iindex] = str(ientry)
 
 # Monash_fine_tune_clean_embed
-Corpus.to_csv('data/Monash_fine_tune_clean_embed.csv',index=False)
+Corpus.to_csv('data/embed/Monash_fine_tune_clean_qbc.csv',index=False)
 
 
