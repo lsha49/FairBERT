@@ -19,7 +19,7 @@ from collections import defaultdict
 from nltk.corpus import wordnet as wn
 from nltk.stem.lancaster import LancasterStemmer
 
-Corpus = pd.read_csv('data/pretrain/forum_2021_lang_eer_mlm.csv', encoding='latin-1')
+Corpus = pd.read_csv('data/pretrain/forum_2021_lang_equal_30_mlm.csv', encoding='latin-1')
 
 st = LancasterStemmer()
 
@@ -54,4 +54,4 @@ for index,entry in enumerate(Corpus['masked']):
 Corpus['masked'].replace('', np.nan, inplace=True)
 Corpus.dropna(subset=['masked'], inplace=True)
 
-Corpus.to_csv('data/pretrain/forum_2021_lang_eer_mlm_1.csv',index=False)
+Corpus.to_csv('data/pretrain/forum_2021_lang_equal_30_mlm.csv',index=False)

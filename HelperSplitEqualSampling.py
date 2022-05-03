@@ -22,15 +22,15 @@ Corpus = pd.read_csv('data/forum_2021_lang_train.csv', encoding='latin-1')
 
 # femaleRow_ind = np.where(Corpus['gender']=='F')[0]
 femaleRow_ind = np.where(Corpus['home_language'].str.contains('english', case=False))[0]
-femaleRow_eq_ind = np.random.choice(femaleRow_ind, size=5000, replace=False)
+femaleRow_eq_ind = np.random.choice(femaleRow_ind, size=20000, replace=False)
 femaleEqCorpus = Corpus.loc[femaleRow_eq_ind]
 
 # maleRow_ind = np.where(Corpus['gender']=='M')[0]
 maleRow_ind = np.where(Corpus['home_language'].str.contains('english', case=False) == False)[0]
-maleRow_eq_ind = np.random.choice(maleRow_ind, size=5000, replace=False)
+maleRow_eq_ind = np.random.choice(maleRow_ind, size=20000, replace=False)
 maleEqCorpus = Corpus.loc[maleRow_eq_ind]
 
 allTrain = np.concatenate([femaleEqCorpus,maleEqCorpus])
 allTrainDf = pd.DataFrame(allTrain, columns = ['gender','home_language','birth_country','indexx','person_id','forum_message'])
-allTrainDf.to_csv('data/forum_2021_lang_equal.csv',index=False)
+allTrainDf.to_csv('data/forum_2021_lang_equal_30.csv',index=False)
 

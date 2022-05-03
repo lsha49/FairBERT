@@ -91,10 +91,10 @@ taskInd00 = np.where(labelFineYG=='00')[0]
 taskInd01 = np.where(labelFineYG=='01')[0]
 taskInd10 = np.where(labelFineYG=='10')[0]
 taskInd11 = np.where(labelFineYG=='11')[0]
-taskInd00_ran = np.random.choice(taskInd00, size=100, replace=False)
-taskInd01_ran = np.random.choice(taskInd01, size=100, replace=False)
-taskInd10_ran = np.random.choice(taskInd10, size=100, replace=False)
-taskInd11_ran = np.random.choice(taskInd11, size=100, replace=False)
+taskInd00_ran = np.random.choice(taskInd00, size=200, replace=False)
+taskInd01_ran = np.random.choice(taskInd01, size=200, replace=False)
+taskInd10_ran = np.random.choice(taskInd10, size=200, replace=False)
+taskInd11_ran = np.random.choice(taskInd11, size=200, replace=False)
 taskAll = np.concatenate([taskInd00,taskInd01,taskInd10,taskInd11])
 tasklabelledIndList = np.concatenate([taskInd00_ran,taskInd01_ran,taskInd10_ran,taskInd11_ran])
 
@@ -152,7 +152,7 @@ for i in range(len(Corpus)):
 # select_ind_demo_un = Strategy.select(labelledSet, unLabelledSet, model=None, batch_size=150000)
 
 
-### QueryExpectedErrorReduction: Expected Error reduction
+### QueryExpectedErrorReduction: Expected Error reduction ### this is taking more than a day
 # alibox = ToolBox(X=allSample, y=allLabelT)
 # Strategy = alibox.get_query_strategy(strategy_name='QueryExpectedErrorReduction')
 # select_ind_task = Strategy.select(labelledSet, unLabelledSet, model=None, batch_size=50000)
@@ -165,10 +165,10 @@ for i in range(len(Corpus)):
 ### QueryExpectedErrorReduction: LAL EER
 alibox = ToolBox(X=allSample, y=allLabelT,query_type='AllLabels')
 Strategy = alibox.get_query_strategy(strategy_name='QueryInstanceLAL')
-select_ind_task = Strategy.select(labelledSet, unLabelledSet, model=None, batch_size=50000)
+select_ind_task = Strategy.select(labelledSet, unLabelledSet, model=None, batch_size=100000)
 alibox = ToolBox(X=allSample, y=allLabelG,query_type='AllLabels')
 Strategy = alibox.get_query_strategy(strategy_name='QueryInstanceLAL')
-select_ind_demo_un = Strategy.select(labelledSet, unLabelledSet, model=None, batch_size=150000)
+select_ind_demo_un = Strategy.select(labelledSet, unLabelledSet, model=None, batch_size=100000)
 
 
 
@@ -203,4 +203,4 @@ selected_ind = selected_ind[:20000]
 
 selectedCorpus = originalCorpus.loc[selected_ind]
 
-selectedCorpus.to_csv('data/forum_2021_lang_lal.csv',index=False)
+selectedCorpus.to_csv('data/forum_2021_lang_lal_10.csv',index=False)

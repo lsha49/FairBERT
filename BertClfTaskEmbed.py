@@ -19,7 +19,9 @@ from sklearn.linear_model import LogisticRegression
 from abroca import *
 
 # Monash_fine_tune_clean_further_embed
-Corpus = pd.read_csv('data/embed/Monash_fine_tune_clean_qbc.csv', encoding='latin-1')
+Corpus = pd.read_csv('data/embed/Monash_fine_tune_clean_lal_incre.csv', encoding='latin-1')
+
+
 Corpus['gender'] = np.where(Corpus['gender']=='F', 0, 1)
 Corpus['home_language'] = np.where(Corpus['home_language'].str.contains('english', case=False), 1, 0) # native is 1
 labelCol = Corpus['label']

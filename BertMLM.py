@@ -17,11 +17,13 @@ from transformers import TextDatasetForNextSentencePrediction
 from transformers import DataCollatorForLanguageModeling
 
 
-Corpus = pd.read_csv('data/pretrain/forum_2021_lang_confi_mlm_1.csv', encoding='latin-1')
+Corpus = pd.read_csv('data/pretrain/forum_2021_lang_lal_10_mlm.csv', encoding='latin-1')
 
 ### perform BertForMaskedLM only
 tokenizer = BertTokenizer.from_pretrained("bert-base-uncased")
-model = BertForMaskedLM.from_pretrained("bert-base-uncased")
+
+# model = BertForMaskedLM.from_pretrained("bert-base-uncased")
+model = BertForMaskedLM.from_pretrained("saved_model/further_lal/checkpoint-20428")
 
 # inputs = tokenizer("The capital of France is [MASK].", return_tensors="pt")
 # labels = tokenizer("The capital of France is Paris.", return_tensors="pt")["input_ids"]
@@ -34,9 +36,9 @@ inputs['labels'] = tokenizer(Corpus['original'].tolist(), return_tensors="pt",  
 # bert_base_no_further_train
 # further_
 args = TrainingArguments(
-    output_dir='saved_model/further_confi',
+    output_dir='saved_model/further_lal_10',
     per_device_train_batch_size=8,
-    num_train_epochs=3,
+    num_train_epochs=6,
     learning_rate=2e-5,
     save_strategy='epoch',
 )
