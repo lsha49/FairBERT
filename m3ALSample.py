@@ -39,14 +39,15 @@ from deslib.util.instance_hardness import kdn_score
 from scipy.spatial import distance
 
 
-# forum_2021_lang_train
-# Monash_fine_tune, Monash_fine_tune_embed
+
+# forum_2021_lang_train_embed_bert_base
+# forum_2021_lang_unselected_sample
 Corpus = pd.read_csv('../forum_2021_lang_train_embed_bert_base.csv', encoding='latin-1')
+selectSamplesGroup1 = 1000
+selectSamplesGroup0 = 1000
+
+
 FineTuneCorpus = pd.read_csv('../Monash_fine_tune_embed.csv', encoding='latin-1')
-selectSamplesEachGroup = 1000
-
-
-
 
 labelFineY = np.where(pd.isnull(FineTuneCorpus['label']), 0, 1)
 # labelFineG = np.where(FineTuneCorpus['gender'] == 'F', 0, 1) 
@@ -167,8 +168,8 @@ selected_ind = np.intersect1d(select_ind_demo, select_ind_task); print(len(selec
 demo1index = np.where(labelG==1)[0]
 demo0index = np.where(labelG==0)[0]
 
-selected_ind_demo1 = np.intersect1d(selected_ind, demo1index)[:selectSamplesEachGroup]
-selected_ind_demo0 = np.intersect1d(selected_ind, demo0index)[:selectSamplesEachGroup]
+selected_ind_demo1 = np.intersect1d(selected_ind, demo1index)[:selectSamplesGroup1]
+selected_ind_demo0 = np.intersect1d(selected_ind, demo0index)[:selectSamplesGroup0]
 selected_ind = np.concatenate([selected_ind_demo1,selected_ind_demo0])
 
 # selected_ind = selected_ind[:20000]
