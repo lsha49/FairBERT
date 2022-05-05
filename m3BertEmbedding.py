@@ -19,17 +19,14 @@ from sklearn.metrics import f1_score
 # model = BertForSequenceClassification.from_pretrained("bert-base-cased", output_hidden_states=True)
 
 tokenizer = AutoTokenizer.from_pretrained("bert-base-cased",model_max_length=512)
+
 # model = AutoModelForSequenceClassification.from_pretrained("bert-base-cased", output_hidden_states=True)
 model = AutoModelForSequenceClassification.from_pretrained("../../uq67_scratch/bfiledata/lele_test_lang", output_hidden_states=True)
 
 
-# forum_2021_lang_train
-# forum_2021_lang_test
-# Monash_fine_tune_clean
-Corpus = pd.read_csv('../../uq67_scratch/bfiledata/Monash_fine_tune.csv', encoding='latin-1')
+# Corpus = pd.read_csv('../../uq67_scratch/bfiledata/Monash_fine_tune.csv', encoding='latin-1')
+Corpus = pd.read_csv('Monash_fine_tune_test_incre', encoding='latin-1')
 
-# Corpus['forum_message'].replace('', np.nan, inplace=True)
-# Corpus = Corpus.dropna(subset=['forum_message'])
 
 excep = 0
 for index,entry in enumerate(Corpus['forum_message']):
