@@ -54,4 +54,4 @@ for index,entry in enumerate(Corpus['masked']):
 Corpus['masked'].replace('', np.nan, inplace=True)
 Corpus.dropna(subset=['masked'], inplace=True)
 
-Corpus.to_csv('data/pretrain/forum_2021_lang_selected_sample.csv',index=False)
+Corpus.to_csv('../forum_2021_lang_selected_sample.csv',index=False)

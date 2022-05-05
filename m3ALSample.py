@@ -39,18 +39,6 @@ from deslib.util.instance_hardness import kdn_score
 from scipy.spatial import distance
 
 
-### Baseline
-# no further pre-training  
-# further pre-training original sampling 
-# further pre-training random under-sampling 
-
-### Fair sampling (worst demo predictability), w/ or w/o demo label
-# unrepresentative, uncertain
-
-### group fairness (best task predictability) => either improve general accuracy or group fairness
-# representative, certain
-
-
 # forum_2021_lang_train
 # Monash_fine_tune, Monash_fine_tune_embed
 Corpus = pd.read_csv('../forum_2021_lang_train_embed_bert_base.csv', encoding='latin-1')
@@ -92,10 +80,10 @@ taskInd00 = np.where(labelFineYG=='00')[0]
 taskInd01 = np.where(labelFineYG=='01')[0]
 taskInd10 = np.where(labelFineYG=='10')[0]
 taskInd11 = np.where(labelFineYG=='11')[0]
-taskInd00_ran = np.random.choice(taskInd00, size=200, replace=False)
-taskInd01_ran = np.random.choice(taskInd01, size=200, replace=False)
-taskInd10_ran = np.random.choice(taskInd10, size=200, replace=False)
-taskInd11_ran = np.random.choice(taskInd11, size=200, replace=False)
+taskInd00_ran = np.random.choice(taskInd00, size=250, replace=False)
+taskInd01_ran = np.random.choice(taskInd01, size=250, replace=False)
+taskInd10_ran = np.random.choice(taskInd10, size=250, replace=False)
+taskInd11_ran = np.random.choice(taskInd11, size=250, replace=False)
 taskAll = np.concatenate([taskInd00,taskInd01,taskInd10,taskInd11])
 tasklabelledIndList = np.concatenate([taskInd00_ran,taskInd01_ran,taskInd10_ran,taskInd11_ran])
 
@@ -122,10 +110,10 @@ allLabelG = np.concatenate([selectedFineTuneSetLabelFineG,labelG])
 
 labelledSet = []
 unLabelledSet = []
-for i in range(0, 400):
+for i in range(0, 1000):
     labelledSet = labelledSet + [i]
 
-for i in range(401, len(allLabelG)-1):
+for i in range(1001, len(allLabelG)-1):
     unLabelledSet = unLabelledSet + [i]
 
 corpusIndices = []
@@ -176,8 +164,8 @@ select_ind_demo_un = Strategy.select(labelledSet, unLabelledSet, model=None, bat
 select_ind_demo = list(set(corpusIndices) - set(select_ind_demo_un))
 selected_ind = np.intersect1d(select_ind_demo, select_ind_task); print(len(selected_ind))
 
-demo1index = np.where(labelG=='1')[0]
-demo0index = np.where(labelG=='0')[0]
+demo1index = np.where(labelG==1)[0]
+demo0index = np.where(labelG==0)[0]
 
 selected_ind_demo1 = np.intersect1d(selected_ind, demo1index)[:selectSamplesEachGroup]
 selected_ind_demo0 = np.intersect1d(selected_ind, demo0index)[:selectSamplesEachGroup]

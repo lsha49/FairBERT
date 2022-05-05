@@ -41,7 +41,7 @@ FileName = '../forum_2021_lang_selected_sample.csv'
 Corpus = pd.read_csv(FileName, encoding='latin-1')
 
 
-nltk.download('omw-1.4')
+# nltk.download('omw-1.4')
 
 newCorpus = pd.DataFrame()
 newIndex = 0
