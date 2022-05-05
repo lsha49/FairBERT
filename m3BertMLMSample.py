@@ -98,7 +98,7 @@ for index,entry in enumerate(newCorpus['indexx']):
 newCorpus['masked'].replace('', np.nan, inplace=True)
 newCorpus.dropna(subset=['masked'], inplace=True)
 
-newCorpus.to_csv('data/pretrain/forum_2021_lang_selected_sample.csv',index=False)
+newCorpus.to_csv('../forum_2021_lang_selected_sample.csv',index=False)
     
 
 

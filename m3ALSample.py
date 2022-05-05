@@ -55,6 +55,9 @@ from scipy.spatial import distance
 # Monash_fine_tune, Monash_fine_tune_embed
 Corpus = pd.read_csv('../forum_2021_lang_train_embed_bert_base.csv', encoding='latin-1')
 FineTuneCorpus = pd.read_csv('../Monash_fine_tune_embed.csv', encoding='latin-1')
+selectSamplesEachGroup = 1000
+
+
 
 
 labelFineY = np.where(pd.isnull(FineTuneCorpus['label']), 0, 1)
@@ -63,8 +66,6 @@ labelFineG = np.where(FineTuneCorpus['lang'].str.contains('english', case=False)
 
 # labelG = np.where(Corpus['gender'] == 'F', 0, 1) 
 labelG = np.where(Corpus['home_language'].str.contains('english', case=False), 1, 0) # native is 1
-
-
 
 # get BERT embeddings fine tune samples
 FineTuneCorpus.drop('facaulty', inplace=True, axis=1)
@@ -101,7 +102,6 @@ tasklabelledIndList = np.concatenate([taskInd00_ran,taskInd01_ran,taskInd10_ran,
 selectedFineTuneSetFeatures = featuresFine.loc[tasklabelledIndList]
 selectedFineTuneSetLabelFineY = labelFineY[tasklabelledIndList]
 selectedFineTuneSetLabelFineG = labelFineG[tasklabelledIndList]
-
 
 # print(features);exit()
 
@@ -144,31 +144,31 @@ for i in range(len(Corpus)):
 
 
 ### QueryInstanceUncertainty: uncertainity, fast
-# alibox = ToolBox(X=allSample, y=allLabelT, measure='least_confident')
-# Strategy = alibox.get_query_strategy(strategy_name='QueryInstanceUncertainty')
-# select_ind_task = Strategy.select(labelledSet, unLabelledSet, model=None, batch_size=50000)
-# alibox = ToolBox(X=allSample, y=allLabelG, measure='least_confident')
-# Strategy = alibox.get_query_strategy(strategy_name='QueryInstanceUncertainty')
-# select_ind_demo_un = Strategy.select(labelledSet, unLabelledSet, model=None, batch_size=150000)
+alibox = ToolBox(X=allSample, y=allLabelT, measure='least_confident')
+Strategy = alibox.get_query_strategy(strategy_name='QueryInstanceUncertainty')
+select_ind_task = Strategy.select(labelledSet, unLabelledSet, model=None, batch_size=100000)
+alibox = ToolBox(X=allSample, y=allLabelG, measure='least_confident')
+Strategy = alibox.get_query_strategy(strategy_name='QueryInstanceUncertainty')
+select_ind_demo_un = Strategy.select(labelledSet, unLabelledSet, model=None, batch_size=100000)
 
 
 ### QueryExpectedErrorReduction: Expected Error reduction ### this is taking more than a day
 # alibox = ToolBox(X=allSample, y=allLabelT)
 # Strategy = alibox.get_query_strategy(strategy_name='QueryExpectedErrorReduction')
-# select_ind_task = Strategy.select(labelledSet, unLabelledSet, model=None, batch_size=50000)
+# select_ind_task = Strategy.select(labelledSet, unLabelledSet, model=None, batch_size=100000)
 # alibox = ToolBox(X=allSample, y=allLabelG)
 # Strategy = alibox.get_query_strategy(strategy_name='QueryExpectedErrorReduction')
-# select_ind_demo_un = Strategy.select(labelledSet, unLabelledSet, model=None, batch_size=150000)
+# select_ind_demo_un = Strategy.select(labelledSet, unLabelledSet, model=None, batch_size=100000)
 
 
 
 ### QueryExpectedErrorReduction: LAL EER
-alibox = ToolBox(X=allSample, y=allLabelT,query_type='AllLabels')
-Strategy = alibox.get_query_strategy(strategy_name='QueryInstanceLAL')
-select_ind_task = Strategy.select(labelledSet, unLabelledSet, model=None, batch_size=100000)
-alibox = ToolBox(X=allSample, y=allLabelG,query_type='AllLabels')
-Strategy = alibox.get_query_strategy(strategy_name='QueryInstanceLAL')
-select_ind_demo_un = Strategy.select(labelledSet, unLabelledSet, model=None, batch_size=100000)
+# alibox = ToolBox(X=allSample, y=allLabelT,query_type='AllLabels')
+# Strategy = alibox.get_query_strategy(strategy_name='QueryInstanceLAL')
+# select_ind_task = Strategy.select(labelledSet, unLabelledSet, model=None, batch_size=100000)
+# alibox = ToolBox(X=allSample, y=allLabelG,query_type='AllLabels')
+# Strategy = alibox.get_query_strategy(strategy_name='QueryInstanceLAL')
+# select_ind_demo_un = Strategy.select(labelledSet, unLabelledSet, model=None, batch_size=100000)
 
 
 
@@ -176,8 +176,14 @@ select_ind_demo_un = Strategy.select(labelledSet, unLabelledSet, model=None, bat
 select_ind_demo = list(set(corpusIndices) - set(select_ind_demo_un))
 selected_ind = np.intersect1d(select_ind_demo, select_ind_task); print(len(selected_ind))
 
+demo1index = np.where(labelG=='1')[0]
+demo0index = np.where(labelG=='0')[0]
 
-selected_ind = selected_ind[:20000]
+selected_ind_demo1 = np.intersect1d(selected_ind, demo1index)[:selectSamplesEachGroup]
+selected_ind_demo0 = np.intersect1d(selected_ind, demo0index)[:selectSamplesEachGroup]
+selected_ind = np.concatenate([selected_ind_demo1,selected_ind_demo0])
+
+# selected_ind = selected_ind[:20000]
 
 un_select_ind = list(set(corpusIndices) - set(selected_ind))
 
