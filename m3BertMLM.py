@@ -32,7 +32,7 @@ inputs['labels'] = tokenizer(Corpus['original'].tolist(), return_tensors="pt",  
 # further_
 args = TrainingArguments(
     overwrite_output_dir=True,
-    output_dir='../../../../uq67_scratch/saved_model/lele_test_lang',
+    output_dir='../../uq67_scratch/bfiledata/lele_test_lang',
     per_device_train_batch_size=8,
     num_train_epochs=3,
     learning_rate=2e-5,

@@ -20,7 +20,7 @@ from sklearn.metrics import f1_score
 
 tokenizer = AutoTokenizer.from_pretrained("bert-base-cased",model_max_length=512)
 # model = AutoModelForSequenceClassification.from_pretrained("bert-base-cased", output_hidden_states=True)
-model = AutoModelForSequenceClassification.from_pretrained("uq67_scratch/saved_model/lele_test_lang", output_hidden_states=True)
+model = AutoModelForSequenceClassification.from_pretrained("../../uq67_scratch/bfiledata/lele_test_lang", output_hidden_states=True)
 
 
 # forum_2021_lang_train
