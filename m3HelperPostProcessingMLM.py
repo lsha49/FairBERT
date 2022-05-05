@@ -19,7 +19,7 @@ from collections import defaultdict
 from nltk.corpus import wordnet as wn
 from nltk.stem.lancaster import LancasterStemmer
 
-Corpus = pd.read_csv('data/pretrain/forum_2021_lang_selected_sample.csv', encoding='latin-1')
+Corpus = pd.read_csv('../forum_2021_lang_selected_sample.csv', encoding='latin-1')
 
 st = LancasterStemmer()
 
