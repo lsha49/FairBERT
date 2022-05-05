@@ -23,7 +23,7 @@ Corpus = pd.read_csv('../forum_2021_lang_selected_sample.csv', encoding='latin-1
 tokenizer = BertTokenizer.from_pretrained("bert-base-uncased")
 
 model = BertForMaskedLM.from_pretrained("bert-base-uncased")
-# model = BertForMaskedLM.from_pretrained("saved_model/further_lal/checkpoint-20428")
+# model = BertForMaskedLM.from_pretrained("uq67_scratch/saved_model/lele_test_lang/checkpoint-20428")
 
 inputs = tokenizer(Corpus['masked'].tolist(), return_tensors="pt", truncation=True, padding=True, max_length=256)
 inputs['labels'] = tokenizer(Corpus['original'].tolist(), return_tensors="pt",  truncation=True, padding=True, max_length=256)["input_ids"]
@@ -31,9 +31,9 @@ inputs['labels'] = tokenizer(Corpus['original'].tolist(), return_tensors="pt",  
 # bert_base_no_further_train
 # further_
 args = TrainingArguments(
-    output_dir='uq67_scratch/saved_model/lele_test_lml20',
+    output_dir='uq67_scratch/saved_model/lele_test_lang',
     per_device_train_batch_size=8,
-    num_train_epochs=6,
+    num_train_epochs=3,
     learning_rate=2e-5,
     save_strategy='epoch',
 )
@@ -56,7 +56,3 @@ trainer = Trainer(
 
 trainer.train()
 trainer.save_model()
-
-# loss = outputs.loss
-# logits = outputs.logits
-# model.save_pretrained("saved_model/further_2021_lang_equal_mlm")
