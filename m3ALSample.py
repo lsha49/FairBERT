@@ -175,7 +175,7 @@ select_ind_demo_un = Strategy.select(labelledSet, unLabelledSet, model=None, bat
 # intercept of task and demo samples of 10000
 select_ind_demo = list(set(corpusIndices) - set(select_ind_demo_un))
 selected_ind = np.intersect1d(select_ind_demo, select_ind_task); print(len(selected_ind))
-selected_ind = selected_ind[:10000]
+selected_ind = selected_ind[:20000]
 
 un_select_ind = list(set(corpusIndices) - set(selected_ind))
 
