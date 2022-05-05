@@ -19,7 +19,7 @@ from sklearn.linear_model import LogisticRegression
 from abroca import *
 
 # Monash_fine_tune_clean_further_embed
-Corpus = pd.read_csv('data/embed/Monash_fine_tune_clean_lal_incre.csv', encoding='latin-1')
+Corpus = pd.read_csv('data/embed/Monash_fine_tune_clean_lal_10.csv', encoding='latin-1')
 
 
 Corpus['gender'] = np.where(Corpus['gender']=='F', 0, 1)
@@ -30,7 +30,7 @@ Corpus.drop('forum_message', inplace=True, axis=1)
 Corpus.drop('label', inplace=True, axis=1)
 Corpus = Corpus.replace(np.nan, 0)
 
-Train_X, Test_X, Train_Y, Test_Y = model_selection.train_test_split(Corpus, labelCol, test_size=0.2, random_state=2)
+Train_X, Test_X, Train_Y, Test_Y = model_selection.train_test_split(Corpus, labelCol, test_size=0.2, random_state=11)
 
 Train_X.drop('gender', inplace=True, axis=1)
 Train_X.drop('home_language', inplace=True, axis=1)

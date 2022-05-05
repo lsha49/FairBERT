@@ -18,7 +18,7 @@ from sklearn.cluster import KMeans
 from sklearn.linear_model import LogisticRegression
 
 # Monash_fine_tune_clean_embed
-Corpus = pd.read_csv('data/embed/Monash_fine_tune_clean_lal_incre.csv', encoding='latin-1')
+Corpus = pd.read_csv('data/embed/Monash_fine_tune_clean_yh.csv', encoding='latin-1')
 
 
 

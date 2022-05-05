@@ -175,8 +175,9 @@ select_ind_demo_un = Strategy.select(labelledSet, unLabelledSet, model=None, bat
 # intercept of task and demo samples of 10000
 select_ind_demo = list(set(corpusIndices) - set(select_ind_demo_un))
 selected_ind = np.intersect1d(select_ind_demo, select_ind_task); print(len(selected_ind))
-selected_ind = selected_ind[:20000]
+selected_ind = selected_ind[:10000]
 
+un_select_ind = list(set(corpusIndices) - set(selected_ind))
 
 ### QueryExpectedErrorReduction: Expected Error reduction
 # alibox = ToolBox(X=features, y=label)
@@ -199,8 +200,10 @@ selected_ind = selected_ind[:20000]
 # select_ind = Strategy.select(firstIndList, secondIndList, batch_size=100)
 
 
-
-
 selectedCorpus = originalCorpus.loc[selected_ind]
 
-selectedCorpus.to_csv('data/forum_2021_lang_lal_10.csv',index=False)
+unselectedCorpus = originalCorpus.loc[un_select_ind] 
+
+selectedCorpus.to_csv('data/forum_2021_lang_lal_5.csv',index=False)
+
+unselectedCorpus.to_csv('data/forum_2021_lang_lal_remained_5.csv',index=False)
