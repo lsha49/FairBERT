@@ -4,7 +4,7 @@ from transformers import Trainer, AutoModelForSequenceClassification
 from transformers import DistilBertTokenizerFast
 import pandas as pd
 import numpy as np
-from datasets import load_metric
+# from datasets import load_metric
 import torch
 import tensorflow as tf
 from sklearn import model_selection, naive_bayes, svm
