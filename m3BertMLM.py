@@ -31,6 +31,7 @@ inputs['labels'] = tokenizer(Corpus['original'].tolist(), return_tensors="pt",  
 # bert_base_no_further_train
 # further_
 args = TrainingArguments(
+    overwrite_output_dir=True,
     output_dir='uq67_scratch/saved_model/lele_test_lang',
     per_device_train_batch_size=8,
     num_train_epochs=3,

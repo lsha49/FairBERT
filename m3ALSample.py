@@ -42,9 +42,9 @@ from scipy.spatial import distance
 
 # forum_2021_lang_train_embed_bert_base
 # forum_2021_lang_unselected_sample
-Corpus = pd.read_csv('../forum_2021_lang_train_embed_bert_base.csv', encoding='latin-1')
-selectSamplesGroup1 = 1000
-selectSamplesGroup0 = 1000
+Corpus = pd.read_csv('../forum_2021_lang_unselected_sample.csv', encoding='latin-1')
+selectSamplesGroup1 = 5000
+selectSamplesGroup0 = 5000
 
 
 FineTuneCorpus = pd.read_csv('../Monash_fine_tune_embed.csv', encoding='latin-1')
@@ -133,12 +133,12 @@ for i in range(len(Corpus)):
 
 
 ### QueryInstanceUncertainty: uncertainity, fast
-alibox = ToolBox(X=allSample, y=allLabelT, measure='least_confident')
-Strategy = alibox.get_query_strategy(strategy_name='QueryInstanceUncertainty')
-select_ind_task = Strategy.select(labelledSet, unLabelledSet, model=None, batch_size=100000)
-alibox = ToolBox(X=allSample, y=allLabelG, measure='least_confident')
-Strategy = alibox.get_query_strategy(strategy_name='QueryInstanceUncertainty')
-select_ind_demo_un = Strategy.select(labelledSet, unLabelledSet, model=None, batch_size=100000)
+# alibox = ToolBox(X=allSample, y=allLabelT, measure='least_confident')
+# Strategy = alibox.get_query_strategy(strategy_name='QueryInstanceUncertainty')
+# select_ind_task = Strategy.select(labelledSet, unLabelledSet, model=None, batch_size=100000)
+# alibox = ToolBox(X=allSample, y=allLabelG, measure='least_confident')
+# Strategy = alibox.get_query_strategy(strategy_name='QueryInstanceUncertainty')
+# select_ind_demo_un = Strategy.select(labelledSet, unLabelledSet, model=None, batch_size=100000)
 
 
 ### QueryExpectedErrorReduction: Expected Error reduction ### this is taking more than a day
@@ -152,12 +152,12 @@ select_ind_demo_un = Strategy.select(labelledSet, unLabelledSet, model=None, bat
 
 
 ### QueryExpectedErrorReduction: LAL EER
-# alibox = ToolBox(X=allSample, y=allLabelT,query_type='AllLabels')
-# Strategy = alibox.get_query_strategy(strategy_name='QueryInstanceLAL')
-# select_ind_task = Strategy.select(labelledSet, unLabelledSet, model=None, batch_size=100000)
-# alibox = ToolBox(X=allSample, y=allLabelG,query_type='AllLabels')
-# Strategy = alibox.get_query_strategy(strategy_name='QueryInstanceLAL')
-# select_ind_demo_un = Strategy.select(labelledSet, unLabelledSet, model=None, batch_size=100000)
+alibox = ToolBox(X=allSample, y=allLabelT,query_type='AllLabels')
+Strategy = alibox.get_query_strategy(strategy_name='QueryInstanceLAL')
+select_ind_task = Strategy.select(labelledSet, unLabelledSet, model=None, batch_size=100000)
+alibox = ToolBox(X=allSample, y=allLabelG,query_type='AllLabels')
+Strategy = alibox.get_query_strategy(strategy_name='QueryInstanceLAL')
+select_ind_demo_un = Strategy.select(labelledSet, unLabelledSet, model=None, batch_size=100000)
 
 
 
