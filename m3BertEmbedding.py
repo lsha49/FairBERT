@@ -26,7 +26,7 @@ model = AutoModelForSequenceClassification.from_pretrained("uq67_scratch/saved_m
 # forum_2021_lang_train
 # forum_2021_lang_test
 # Monash_fine_tune_clean
-Corpus = pd.read_csv('data/Monash_fine_tune.csv', encoding='latin-1')
+Corpus = pd.read_csv('../Monash_fine_tune.csv', encoding='latin-1')
 
 # Corpus['forum_message'].replace('', np.nan, inplace=True)
 # Corpus = Corpus.dropna(subset=['forum_message'])
