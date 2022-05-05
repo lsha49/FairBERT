@@ -28,11 +28,12 @@ model = BertForMaskedLM.from_pretrained("bert-base-uncased")
 inputs = tokenizer(Corpus['masked'].tolist(), return_tensors="pt", truncation=True, padding=True, max_length=256)
 inputs['labels'] = tokenizer(Corpus['original'].tolist(), return_tensors="pt",  truncation=True, padding=True, max_length=256)["input_ids"]
 
-# bert_base_no_further_train
-# further_
+
+# lele_test_lang 
+# lele_test_incre_
 args = TrainingArguments(
     overwrite_output_dir=True,
-    output_dir='../../uq67_scratch/bfiledata/lele_test_lang',
+    output_dir='../../uq67_scratch/bfiledata/lele_test_incre_10',
     per_device_train_batch_size=8,
     num_train_epochs=3,
     learning_rate=2e-5,
