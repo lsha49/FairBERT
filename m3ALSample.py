@@ -42,12 +42,12 @@ from scipy.spatial import distance
 
 # forum_2021_lang_train_embed_bert_base
 # forum_2021_lang_unselected_sample
-Corpus = pd.read_csv('../forum_2021_lang_unselected_sample.csv', encoding='latin-1')
+Corpus = pd.read_csv('../../uq67_scratch/bfiledata/forum_2021_lang_unselected_sample.csv', encoding='latin-1')
 selectSamplesGroup1 = 5000
 selectSamplesGroup0 = 5000
 
 
-FineTuneCorpus = pd.read_csv('../Monash_fine_tune_embed.csv', encoding='latin-1')
+FineTuneCorpus = pd.read_csv('../../uq67_scratch/bfiledata/Monash_fine_tune_embed.csv', encoding='latin-1')
 
 labelFineY = np.where(pd.isnull(FineTuneCorpus['label']), 0, 1)
 # labelFineG = np.where(FineTuneCorpus['gender'] == 'F', 0, 1) 
@@ -201,6 +201,6 @@ selectedCorpus = originalCorpus.loc[selected_ind]
 
 unselectedCorpus = originalCorpus.loc[un_select_ind] 
 
-selectedCorpus.to_csv('../forum_2021_lang_selected_sample.csv',index=False)
+selectedCorpus.to_csv('../../uq67_scratch/bfiledata/forum_2021_lang_selected_sample.csv',index=False)
 
-unselectedCorpus.to_csv('../forum_2021_lang_unselected_sample.csv',index=False)
+unselectedCorpus.to_csv('../../uq67_scratch/bfiledata/forum_2021_lang_unselected_sample.csv',index=False)

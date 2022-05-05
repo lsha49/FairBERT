@@ -37,7 +37,7 @@ from nltk.corpus import wordnet
 
 
 # forum_2021_lang_equal
-FileName = '../forum_2021_lang_selected_sample.csv'
+FileName = '../../uq67_scratch/bfiledata/forum_2021_lang_selected_sample.csv'
 Corpus = pd.read_csv(FileName, encoding='latin-1')
 
 
@@ -98,7 +98,7 @@ for index,entry in enumerate(newCorpus['indexx']):
 newCorpus['masked'].replace('', np.nan, inplace=True)
 newCorpus.dropna(subset=['masked'], inplace=True)
 
-newCorpus.to_csv('../forum_2021_lang_selected_sample.csv',index=False)
+newCorpus.to_csv('../../uq67_scratch/bfiledata/forum_2021_lang_selected_sample.csv',index=False)
     
 
 

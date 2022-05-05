@@ -26,7 +26,7 @@ model = AutoModelForSequenceClassification.from_pretrained("uq67_scratch/saved_m
 # forum_2021_lang_train
 # forum_2021_lang_test
 # Monash_fine_tune_clean
-Corpus = pd.read_csv('../Monash_fine_tune.csv', encoding='latin-1')
+Corpus = pd.read_csv('../../uq67_scratch/bfiledata/Monash_fine_tune.csv', encoding='latin-1')
 
 # Corpus['forum_message'].replace('', np.nan, inplace=True)
 # Corpus = Corpus.dropna(subset=['forum_message'])
@@ -44,6 +44,6 @@ for index,entry in enumerate(Corpus['forum_message']):
         Corpus.loc[index, iindex] = str(ientry)
 
 # Monash_fine_tune_clean_embed
-Corpus.to_csv('../Monash_fine_tune_test_embed.csv',index=False)
+Corpus.to_csv('../../uq67_scratch/bfiledata/Monash_fine_tune_test_embed.csv',index=False)
 
 
