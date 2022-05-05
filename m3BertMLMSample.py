@@ -37,7 +37,7 @@ from nltk.corpus import wordnet
 
 
 # forum_2021_lang_equal
-FileName = 'data/forum_2021_lang_selected_sample.csv'
+FileName = '../forum_2021_lang_selected_sample.csv'
 Corpus = pd.read_csv(FileName, encoding='latin-1')
 
 
