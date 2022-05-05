@@ -25,6 +25,9 @@ model = AutoModelForSequenceClassification.from_pretrained("../../uq67_scratch/b
 
 
 # Corpus = pd.read_csv('../../uq67_scratch/bfiledata/Monash_fine_tune.csv', encoding='latin-1')
+
+# Monash_fine_tune
+# Monash_fine_tune_test_incre
 Corpus = pd.read_csv('Monash_fine_tune_test_incre', encoding='latin-1')
 
 
