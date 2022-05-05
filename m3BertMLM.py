@@ -22,13 +22,8 @@ Corpus = pd.read_csv('../forum_2021_lang_lal_20_mlm.csv', encoding='latin-1')
 ### perform BertForMaskedLM only
 tokenizer = BertTokenizer.from_pretrained("bert-base-uncased")
 
-# model = BertForMaskedLM.from_pretrained("bert-base-uncased")
-model = BertForMaskedLM.from_pretrained("saved_model/further_lal/checkpoint-20428")
-
-# inputs = tokenizer("The capital of France is [MASK].", return_tensors="pt")
-# labels = tokenizer("The capital of France is Paris.", return_tensors="pt")["input_ids"]
-# labels = tokenizer(Corpus['original'].tolist(), return_tensors="pt",  truncation=True, padding=True, max_length=256)["input_ids"]
-# outputs = model(**inputs, labels=labels)
+model = BertForMaskedLM.from_pretrained("bert-base-uncased")
+# model = BertForMaskedLM.from_pretrained("saved_model/further_lal/checkpoint-20428")
 
 inputs = tokenizer(Corpus['masked'].tolist(), return_tensors="pt", truncation=True, padding=True, max_length=256)
 inputs['labels'] = tokenizer(Corpus['original'].tolist(), return_tensors="pt",  truncation=True, padding=True, max_length=256)["input_ids"]
