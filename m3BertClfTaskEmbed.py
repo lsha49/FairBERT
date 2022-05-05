@@ -21,6 +21,7 @@ from abroca import *
 # Monash_fine_tune_clean_further_embed
 Corpus = pd.read_csv('../../uq67_scratch/bfiledata/Monash_fine_tune_test_embed.csv', encoding='latin-1')
 
+# Corpus = pd.read_csv('data/embed/Monash_fine_tune_clean_yh.csv', encoding='latin-1')
 
 Corpus['gender'] = np.where(Corpus['gender']=='F', 0, 1)
 Corpus['home_language'] = np.where(Corpus['home_language'].str.contains('english', case=False), 1, 0) # native is 1
@@ -48,6 +49,7 @@ preditedProb1 = preditedProb[:, 1]
 
 
 print(predicted)
+Test_Y.reset_index(drop=True, inplace=True)
 
 print("Accuracy Score -> ",accuracy_score(predicted, Test_Y))
 print("Kappa Score -> ",cohen_kappa_score(predicted, Test_Y))
@@ -56,7 +58,12 @@ print("AUC Score -> ", roc_auc_score(Test_Y,predicted))
 print("F1 Score -> ",f1_score(predicted, Test_Y, average='weighted'))
 
 
-print("dem1 AUC Score -> ", roc_auc_score(Test_Y,predicted))
+nativeInd = np.where(Test_L==1)[0]
+nonnativeInd = np.where(Test_L==0)[0]
+print("dem1 correct -> ", accuracy_score(Test_Y[nativeInd],predicted[nativeInd], normalize=False))
+print("dem0 correct -> ", accuracy_score(Test_Y[nonnativeInd],predicted[nonnativeInd], normalize=False))
+
+
 
 
 # ABROCA computation
