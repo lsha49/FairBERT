@@ -1,4 +1,4 @@
-# Casenote deployable project
+# FAIR BERT PROJECT
 This is a casenote script file containing model training and testing using LEGAL BERT model published in huggingface
 
 ## Requirements  
