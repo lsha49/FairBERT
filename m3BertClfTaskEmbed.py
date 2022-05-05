@@ -56,6 +56,9 @@ print("AUC Score -> ", roc_auc_score(Test_Y,predicted))
 print("F1 Score -> ",f1_score(predicted, Test_Y, average='weighted'))
 
 
+print("dem1 AUC Score -> ", roc_auc_score(Test_Y,predicted))
+
+
 # ABROCA computation
 abrocaDf = pd.DataFrame(predicted, columns = ['predicted'])
 abrocaDf['prob_1'] = pd.DataFrame(preditedProb)[1]
