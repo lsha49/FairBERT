@@ -144,10 +144,10 @@ for i in range(len(Corpus)):
 ### QueryExpectedErrorReduction: Expected Error reduction ### this is taking more than a day
 alibox = ToolBox(X=allSample, y=allLabelT)
 Strategy = alibox.get_query_strategy(strategy_name='QueryExpectedErrorReduction')
-select_ind_task = Strategy.select(labelledSet, unLabelledSet, model=None, batch_size=100000)
+select_ind_task = Strategy.select(labelledSet, unLabelledSet, model=None, batch_size=10000)
 alibox = ToolBox(X=allSample, y=allLabelG)
 Strategy = alibox.get_query_strategy(strategy_name='QueryExpectedErrorReduction')
-select_ind_demo_un = Strategy.select(labelledSet, unLabelledSet, model=None, batch_size=100000)
+select_ind_demo_un = Strategy.select(labelledSet, unLabelledSet, model=None, batch_size=10000)
 
 
 
