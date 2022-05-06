@@ -22,8 +22,8 @@ Corpus = pd.read_csv('../../uq67_scratch/bfiledata/forum_2021_lang_selected_samp
 ### perform BertForMaskedLM only
 tokenizer = BertTokenizer.from_pretrained("bert-base-uncased")
 
-model = BertForMaskedLM.from_pretrained("bert-base-uncased")
-# model = BertForMaskedLM.from_pretrained("uq67_scratch/saved_model/lele_test_lang/checkpoint-20428")
+# model = BertForMaskedLM.from_pretrained("bert-base-uncased")
+model = BertForMaskedLM.from_pretrained("../../uq67_scratch/bfiledata/lele_test_lang")
 
 inputs = tokenizer(Corpus['masked'].tolist(), return_tensors="pt", truncation=True, padding=True, max_length=256)
 inputs['labels'] = tokenizer(Corpus['original'].tolist(), return_tensors="pt",  truncation=True, padding=True, max_length=256)["input_ids"]
