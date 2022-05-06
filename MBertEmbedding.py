@@ -31,7 +31,7 @@ model = AutoModelForSequenceClassification.from_pretrained("../../uq67_scratch/b
 
 # Monash_fine_tune
 # Monash_fine_tune_test_incre
-Corpus = pd.read_csv('Monash_fine_tune_test_incre.csv', encoding='latin-1')
+Corpus = pd.read_csv('Monash_fine_tune.csv', encoding='latin-1')
 
 
 excep = 0
