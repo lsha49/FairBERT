@@ -84,7 +84,7 @@ for index,entry in enumerate(Corpus['forum_message']):
         
         newIndex = newIndex + 1
 
-for index,entry in enumerate(newCorpus['indexx']):
+for index,entry in enumerate(newCorpus['masked']):
     if len(str(newCorpus.loc[index, 'masked']).strip()) < 50:  
         newCorpus.loc[index, 'masked'] = ''
     countAlpha=0
@@ -93,6 +93,18 @@ for index,entry in enumerate(newCorpus['indexx']):
             countAlpha=countAlpha+1
     if countAlpha < 20:
         newCorpus.loc[index, 'masked'] = ''
+    if '[MASK]' not in str(entry):  
+        Corpus.loc[index, 'masked'] = ''
+    if 'George' in str(entry):  
+        Corpus.loc[index, 'masked'] = ''
+    if 'george' in str(entry):  
+        Corpus.loc[index, 'masked'] = ''
+    if entry.find('[MASK]') == 0:
+        Corpus.loc[index, 'masked'] = ''
+    if entry.find('[MASK]') == 1:
+        Corpus.loc[index, 'masked'] = ''
+    if entry.find('[MASK]') == 2:
+        Corpus.loc[index, 'masked'] = ''
     
 
 newCorpus['masked'].replace('', np.nan, inplace=True)
