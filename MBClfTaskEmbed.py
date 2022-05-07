@@ -18,6 +18,9 @@ from sklearn.cluster import KMeans
 from sklearn.linear_model import LogisticRegression
 from abroca import *
 
+# run rename if want to save embedding
+# mv ../../uq67_scratch/bfiledata/Monash_fine_tune_test_embed.csv ../../uq67_scratch/bfiledata/Monash_fine_tune_test_embed_XX.csv
+
 # Monash_fine_tune_clean_further_embed
 Corpus = pd.read_csv('../../uq67_scratch/bfiledata/Monash_fine_tune_test_embed.csv', encoding='latin-1')
 

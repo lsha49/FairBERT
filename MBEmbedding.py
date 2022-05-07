@@ -46,6 +46,3 @@ for index,entry in enumerate(Corpus['forum_message']):
 
 # Monash_fine_tune_clean_embed
 Corpus.to_csv('../../uq67_scratch/bfiledata/Monash_fine_tune_test_embed.csv',index=False)
-
-
-# mv ../../uq67_scratch/bfiledata/Monash_fine_tune_test_embed.csv ../../uq67_scratch/bfiledata/Monash_fine_tune_test_embed_XX.csv
