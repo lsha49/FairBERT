@@ -71,7 +71,6 @@ for index,entry in enumerate(Corpus['forum_message']):
             else:
                 toWrite = ' ' + word
                 toWriteOriginal = ' ' + word
-            # sent = sent[:256]
             newWordsMasked = newWordsMasked + toWrite
             newWordsOrig = newWordsOrig + toWriteOriginal
         
