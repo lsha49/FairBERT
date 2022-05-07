@@ -37,9 +37,11 @@ from nltk.corpus import wordnet
 
 
 # forum_2021_lang_equal
-FileName = 'data/forum_2021_lang_lal_20.csv'
+FileName = '../../uq67_scratch/bfiledata/forum_2021_lang_selected_sample.csv'
 Corpus = pd.read_csv(FileName, encoding='latin-1')
 
+
+# nltk.download('omw-1.4')
 
 newCorpus = pd.DataFrame()
 newIndex = 0
@@ -82,7 +84,7 @@ for index,entry in enumerate(Corpus['forum_message']):
         
         newIndex = newIndex + 1
 
-for index,entry in enumerate(newCorpus['indexx']):
+for index,entry in enumerate(newCorpus['masked']):
     if len(str(newCorpus.loc[index, 'masked']).strip()) < 50:  
         newCorpus.loc[index, 'masked'] = ''
     countAlpha=0
@@ -91,12 +93,24 @@ for index,entry in enumerate(newCorpus['indexx']):
             countAlpha=countAlpha+1
     if countAlpha < 20:
         newCorpus.loc[index, 'masked'] = ''
+    if '[MASK]' not in str(entry):  
+        newCorpus.loc[index, 'masked'] = ''
+    if 'George' in str(entry):  
+        newCorpus.loc[index, 'masked'] = ''
+    if 'george' in str(entry):  
+        newCorpus.loc[index, 'masked'] = ''
+    if entry.find('[MASK]') == 0:
+        newCorpus.loc[index, 'masked'] = ''
+    if entry.find('[MASK]') == 1:
+        newCorpus.loc[index, 'masked'] = ''
+    if entry.find('[MASK]') == 2:
+        newCorpus.loc[index, 'masked'] = ''
     
 
 newCorpus['masked'].replace('', np.nan, inplace=True)
 newCorpus.dropna(subset=['masked'], inplace=True)
 
-newCorpus.to_csv('data/pretrain/forum_2021_lang_lal_20_mlm.csv',index=False)
+newCorpus.to_csv('../../uq67_scratch/bfiledata/forum_2021_lang_selected_sample.csv',index=False)
     
 
 
