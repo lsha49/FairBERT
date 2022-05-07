@@ -24,10 +24,8 @@ tokenizer = AutoTokenizer.from_pretrained("bert-base-cased",model_max_length=512
 
 # model = AutoModelForSequenceClassification.from_pretrained("../../uq67_scratch/bfiledata/lele_test_incre_10", output_hidden_states=True)
 
-model = AutoModelForSequenceClassification.from_pretrained("../../uq67_scratch/saved_model/100checkpoint", output_hidden_states=True)
+model = AutoModelForSequenceClassification.from_pretrained("../../uq67_scratch/saved_model/100checkpoint/checkpoint-46000", output_hidden_states=True)
 
-
-# Corpus = pd.read_csv('../../uq67_scratch/bfiledata/Monash_fine_tune.csv', encoding='latin-1')
 
 # Monash_fine_tune
 # Monash_fine_tune_test_incre
