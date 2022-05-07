@@ -45,9 +45,9 @@ from random import randrange
 from nltk.corpus import wordnet
 
 Corpus = pd.read_csv('data/embed/forum_2021_lang_train_embed_bert_base.csv', encoding='latin-1')
-selectSamplesGroup1 = 10000
-selectSamplesGroup0 = 10000
-savedName = 'data/forum_2021_lang_yh_conf_10.csv'
+selectSamplesGroup1 = 30000
+selectSamplesGroup0 = 30000
+savedName = 'data/forum_2021_lang_yh_conf_30.csv'
 
 
 FineTuneCorpus = pd.read_csv('data/embed/Monash_fine_tune_embed.csv', encoding='latin-1')

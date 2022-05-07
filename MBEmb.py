@@ -22,9 +22,9 @@ tokenizer = AutoTokenizer.from_pretrained("bert-base-cased",model_max_length=512
 
 # model = AutoModelForSequenceClassification.from_pretrained("bert-base-cased", output_hidden_states=True)
 
-# model = AutoModelForSequenceClassification.from_pretrained("../../uq67_scratch/bfiledata/lele_test_incre_10", output_hidden_states=True)
+model = AutoModelForSequenceClassification.from_pretrained("../../uq67_scratch/bfiledata/lele_test_lang", output_hidden_states=True)
 
-model = AutoModelForSequenceClassification.from_pretrained("../../uq67_scratch/saved_model/100checkpoint/checkpoint-46000", output_hidden_states=True)
+# model = AutoModelForSequenceClassification.from_pretrained("../../uq67_scratch/saved_model/100checkpoint/checkpoint-46000", output_hidden_states=True)
 
 
 # Monash_fine_tune

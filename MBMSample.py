@@ -36,7 +36,6 @@ from random import randrange
 from nltk.corpus import wordnet
 
 
-# forum_2021_lang_equal
 FileName = '../../uq67_scratch/bfiledata/forum_2021_lang_selected_sample.csv'
 Corpus = pd.read_csv(FileName, encoding='latin-1')
 
