@@ -47,7 +47,7 @@ from nltk.corpus import wordnet
 Corpus = pd.read_csv('data/embed/forum_2021_lang_train_embed_bert_base.csv', encoding='latin-1')
 selectSamplesGroup1 = 30000
 selectSamplesGroup0 = 30000
-savedName = 'data/forum_2021_gender_yh_conf_30.csv'
+savedName = 'data/forum_2021_gender_yh_eq_committe_30.csv'
 
 
 FineTuneCorpus = pd.read_csv('data/embed/Monash_fine_tune_embed.csv', encoding='latin-1')
@@ -128,21 +128,21 @@ for i in range(len(Corpus)):
 ###### AL select samples ######
 
 ### QueryInstanceQBC: query-by-committee, fast
-# alibox = ToolBox(X=allSample, y=allLabelT) # select task-informative samples
-# Strategy = alibox.get_query_strategy(strategy_name='QueryInstanceQBC')
-# select_ind_task = Strategy.select(labelledSet, unLabelledSet, model=None, batch_size=100000)
-# alibox = ToolBox(X=allSample, y=allLabelG) # select demo-uninformative samples
-# Strategy = alibox.get_query_strategy(strategy_name='QueryInstanceQBC')
-# select_ind_demo_un = Strategy.select(labelledSet, unLabelledSet, model=None, batch_size=100000)
+alibox = ToolBox(X=allSample, y=allLabelT) # select task-informative samples
+Strategy = alibox.get_query_strategy(strategy_name='QueryInstanceQBC')
+select_ind_task = Strategy.select(labelledSet, unLabelledSet, model=None, batch_size=100000)
+alibox = ToolBox(X=allSample, y=allLabelG) # select demo-uninformative samples
+Strategy = alibox.get_query_strategy(strategy_name='QueryInstanceQBC')
+select_ind_demo_un = Strategy.select(labelledSet, unLabelledSet, model=None, batch_size=100000)
 
 
 ### QueryInstanceUncertainty: uncertainity, fast
-alibox = ToolBox(X=allSample, y=allLabelT, measure='least_confident')
-Strategy = alibox.get_query_strategy(strategy_name='QueryInstanceUncertainty')
-select_ind_task = Strategy.select(labelledSet, unLabelledSet, model=None, batch_size=100000)
-alibox = ToolBox(X=allSample, y=allLabelG, measure='least_confident')
-Strategy = alibox.get_query_strategy(strategy_name='QueryInstanceUncertainty')
-select_ind_demo_un = Strategy.select(labelledSet, unLabelledSet, model=None, batch_size=100000)
+# alibox = ToolBox(X=allSample, y=allLabelT, measure='least_confident')
+# Strategy = alibox.get_query_strategy(strategy_name='QueryInstanceUncertainty')
+# select_ind_task = Strategy.select(labelledSet, unLabelledSet, model=None, batch_size=100000)
+# alibox = ToolBox(X=allSample, y=allLabelG, measure='least_confident')
+# Strategy = alibox.get_query_strategy(strategy_name='QueryInstanceUncertainty')
+# select_ind_demo_un = Strategy.select(labelledSet, unLabelledSet, model=None, batch_size=100000)
 
 
 ### QueryExpectedErrorReduction: Expected Error reduction ### this is taking more than a day
