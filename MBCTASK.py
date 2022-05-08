@@ -19,7 +19,7 @@ from sklearn.linear_model import LogisticRegression
 from abroca import *
 
 
-# mv ../../uq67_scratch/bfiledata/Monash_fine_tune_test_embed.csv ../../uq67_scratch/bfiledata/embed_lang_demo_.csv
+# mv ../../uq67_scratch/bfiledata/Monash_fine_tune_test_embed.csv ../../uq67_scratch/bfiledata/embed_gender_.csv
 
 # Monash_fine_tune_clean_further_embed
 Corpus = pd.read_csv('../../uq67_scratch/bfiledata/Monash_fine_tune_test_embed.csv', encoding='latin-1')
@@ -73,7 +73,7 @@ print("dem0 correct -> ", accuracy_score(Test_Y[nonnativeInd],predicted[nonnativ
 abrocaDf = pd.DataFrame(predicted, columns = ['predicted'])
 abrocaDf['prob_1'] = pd.DataFrame(preditedProb)[1]
 abrocaDf['label'] = Test_Y
-abrocaDf['demo'] = Test_L.astype(str)
+abrocaDf['demo'] = Test_G.astype(str)
 
 slice = compute_abroca(abrocaDf, 
                         pred_col = 'prob_1' , 

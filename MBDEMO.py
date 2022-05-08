@@ -23,8 +23,8 @@ Corpus = pd.read_csv('../../uq67_scratch/bfiledata/Monash_fine_tune_test_embed.c
 
 
 # using gender language  
-# labelCol = np.where(Corpus['gender']=='F', 0, 1)
-labelCol = np.where(Corpus['home_language'].str.contains('english', case=False), 1, 0) # native is 1
+labelCol = np.where(Corpus['gender']=='F', 0, 1)
+# labelCol = np.where(Corpus['home_language'].str.contains('english', case=False), 1, 0) # native is 1
 
 Corpus.drop('gender', inplace=True, axis=1)
 Corpus.drop('home_language', inplace=True, axis=1)
