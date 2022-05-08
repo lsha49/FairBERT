@@ -43,18 +43,20 @@ from scipy.spatial import distance
 # forum_2021_lang_train_embed_bert_base
 # forum_2021_lang_unselected_sample
 Corpus = pd.read_csv('../../uq67_scratch/bfiledata/forum_2021_lang_train_embed_bert_base.csv', encoding='latin-1')
-selectSamplesGroup1 = 40000
-selectSamplesGroup0 = 15000
+selectSamplesGroup1 = 10000
+selectSamplesGroup0 = 10000
 
 
 FineTuneCorpus = pd.read_csv('../../uq67_scratch/bfiledata/Monash_fine_tune_embed.csv', encoding='latin-1')
 
 labelFineY = np.where(pd.isnull(FineTuneCorpus['label']), 0, 1)
-# labelFineG = np.where(FineTuneCorpus['gender'] == 'F', 0, 1) 
-labelFineG = np.where(FineTuneCorpus['lang'].str.contains('english', case=False), 1, 0) # native is 1
 
-# labelG = np.where(Corpus['gender'] == 'F', 0, 1) 
-labelG = np.where(Corpus['home_language'].str.contains('english', case=False), 1, 0) # native is 1
+# labelFineG = np.where(FineTuneCorpus['lang'].str.contains('english', case=False), 1, 0) # native is 1
+# labelG = np.where(Corpus['home_language'].str.contains('english', case=False), 1, 0) # native is 1
+
+labelFineG = np.where(FineTuneCorpus['gender'] == 'F', 0, 1) 
+labelG = np.where(Corpus['gender'] == 'F', 0, 1) 
+
 
 # get BERT embeddings fine tune samples
 FineTuneCorpus.drop('facaulty', inplace=True, axis=1)
