@@ -47,17 +47,18 @@ from nltk.corpus import wordnet
 Corpus = pd.read_csv('data/embed/forum_2021_lang_train_embed_bert_base.csv', encoding='latin-1')
 selectSamplesGroup1 = 30000
 selectSamplesGroup0 = 30000
-savedName = 'data/forum_2021_lang_yh_conf_30.csv'
+savedName = 'data/forum_2021_gender_yh_conf_30.csv'
 
 
 FineTuneCorpus = pd.read_csv('data/embed/Monash_fine_tune_embed.csv', encoding='latin-1')
 
 labelFineY = np.where(pd.isnull(FineTuneCorpus['label']), 0, 1)
-# labelFineG = np.where(FineTuneCorpus['gender'] == 'F', 0, 1) 
-labelFineG = np.where(FineTuneCorpus['lang'].str.contains('english', case=False), 1, 0) # native is 1
 
-# labelG = np.where(Corpus['gender'] == 'F', 0, 1) 
-labelG = np.where(Corpus['home_language'].str.contains('english', case=False), 1, 0) # native is 1
+# labelFineG = np.where(FineTuneCorpus['lang'].str.contains('english', case=False), 1, 0) # native is 1
+# labelG = np.where(Corpus['home_language'].str.contains('english', case=False), 1, 0) # native is 1
+
+labelFineG = np.where(FineTuneCorpus['gender'] == 'F', 0, 1) 
+labelG = np.where(Corpus['gender'] == 'F', 0, 1) 
 
 # get BERT embeddings fine tune samples
 FineTuneCorpus.drop('facaulty', inplace=True, axis=1)
