@@ -60,8 +60,8 @@ print("AUC Score -> ", roc_auc_score(Test_Y,predicted))
 print("F1 Score -> ",f1_score(predicted, Test_Y, average='weighted'))
 
 
-nativeInd = np.where(Test_L==1)[0]
-nonnativeInd = np.where(Test_L==0)[0]
+nativeInd = np.where(Test_G==1)[0]
+nonnativeInd = np.where(Test_G==0)[0]
 print("dem1 correct -> ", accuracy_score(Test_Y[nativeInd],predicted[nativeInd], normalize=False))
 print("dem0 correct -> ", accuracy_score(Test_Y[nonnativeInd],predicted[nonnativeInd], normalize=False))
 
