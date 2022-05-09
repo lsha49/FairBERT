@@ -126,12 +126,12 @@ for i in range(len(Corpus)):
 ###### AL select samples ######
 
 ### QueryInstanceQBC: query-by-committee, fast
-alibox = ToolBox(X=allSample, y=allLabelT) # select task-informative samples
-Strategy = alibox.get_query_strategy(strategy_name='QueryInstanceQBC')
-select_ind_task = Strategy.select(labelledSet, unLabelledSet, model=None, batch_size=100000)
-alibox = ToolBox(X=allSample, y=allLabelG) # select demo-uninformative samples
-Strategy = alibox.get_query_strategy(strategy_name='QueryInstanceQBC')
-select_ind_demo_un = Strategy.select(labelledSet, unLabelledSet, model=None, batch_size=100000)
+# alibox = ToolBox(X=allSample, y=allLabelT) # select task-informative samples
+# Strategy = alibox.get_query_strategy(strategy_name='QueryInstanceQBC')
+# select_ind_task = Strategy.select(labelledSet, unLabelledSet, model=None, batch_size=100000)
+# alibox = ToolBox(X=allSample, y=allLabelG) # select demo-uninformative samples
+# Strategy = alibox.get_query_strategy(strategy_name='QueryInstanceQBC')
+# select_ind_demo_un = Strategy.select(labelledSet, unLabelledSet, model=None, batch_size=100000)
 
 
 ### QueryInstanceUncertainty: uncertainity, fast
@@ -155,12 +155,12 @@ select_ind_demo_un = Strategy.select(labelledSet, unLabelledSet, model=None, bat
 
 
 ### QueryExpectedErrorReduction: LAL EER
-# alibox = ToolBox(X=allSample, y=allLabelT,query_type='AllLabels', mode='LAL_independent',train_slt=True)
-# Strategy = alibox.get_query_strategy(strategy_name='QueryInstanceLAL')
-# select_ind_task = Strategy.select(labelledSet, unLabelledSet, model=None, batch_size=100000)
-# alibox = ToolBox(X=allSample, y=allLabelG,query_type='AllLabels', mode='LAL_independent',train_slt=True)
-# Strategy = alibox.get_query_strategy(strategy_name='QueryInstanceLAL')
-# select_ind_demo_un = Strategy.select(labelledSet, unLabelledSet, model=None, batch_size=100000)
+alibox = ToolBox(X=allSample, y=allLabelT,query_type='AllLabels', mode='LAL_independent',train_slt=True)
+Strategy = alibox.get_query_strategy(strategy_name='QueryInstanceLAL')
+select_ind_task = Strategy.select(labelledSet, unLabelledSet, model=None, batch_size=100000)
+alibox = ToolBox(X=allSample, y=allLabelG,query_type='AllLabels', mode='LAL_independent',train_slt=True)
+Strategy = alibox.get_query_strategy(strategy_name='QueryInstanceLAL')
+select_ind_demo_un = Strategy.select(labelledSet, unLabelledSet, model=None, batch_size=100000)
 
 
 
