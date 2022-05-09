@@ -23,7 +23,7 @@ from abroca import *
 
 # Corpus = pd.read_csv('../../uq67_scratch/bfiledata/Monash_fine_tune_test_embed.csv', encoding='latin-1')
 
-Corpus = pd.read_csv('../../uq67_scratch/bfiledata_steve/embedding_file/yh_lang_conf_20_embedding.csv', encoding='latin-1')
+Corpus = pd.read_csv('../../uq67_scratch/bfiledata_steve/embedding_file/yh_lang_conf_30_embedding.csv', encoding='latin-1')
 
 # Corpus = pd.read_csv('data/embed/Monash_fine_tune_clean_yh.csv', encoding='latin-1')
 
