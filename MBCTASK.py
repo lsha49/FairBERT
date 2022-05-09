@@ -33,7 +33,7 @@ Corpus.drop('forum_message', inplace=True, axis=1)
 Corpus.drop('label', inplace=True, axis=1)
 Corpus = Corpus.replace(np.nan, 0)
 
-Train_X, Test_X, Train_Y, Test_Y = model_selection.train_test_split(Corpus, labelCol, test_size=0.2, random_state=111)
+Train_X, Test_X, Train_Y, Test_Y = model_selection.train_test_split(Corpus, labelCol, test_size=0.2, random_state=11)
 
 Train_X.drop('gender', inplace=True, axis=1)
 Train_X.drop('home_language', inplace=True, axis=1)
