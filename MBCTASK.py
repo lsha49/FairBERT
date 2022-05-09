@@ -21,8 +21,9 @@ from abroca import *
 
 # mv ../../uq67_scratch/bfiledata/Monash_fine_tune_test_embed.csv ../../uq67_scratch/bfiledata/embed_gender_.csv
 
-# Monash_fine_tune_clean_further_embed
-Corpus = pd.read_csv('../../uq67_scratch/bfiledata/Monash_fine_tune_test_embed.csv', encoding='latin-1')
+# Corpus = pd.read_csv('../../uq67_scratch/bfiledata/Monash_fine_tune_test_embed.csv', encoding='latin-1')
+
+Corpus = pd.read_csv('../../uq67_scratch/bfiledata_steve/Monash_fine_tune_test_embed_yh.csv', encoding='latin-1')
 
 # Corpus = pd.read_csv('data/embed/Monash_fine_tune_clean_yh.csv', encoding='latin-1')
 
