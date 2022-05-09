@@ -22,7 +22,7 @@ from sklearn.linear_model import LogisticRegression
 
 # Corpus = pd.read_csv('../../uq67_scratch/bfiledata_steve/Monash_fine_tune_test_embed_yh.csv', encoding='latin-1')
 
-Corpus = pd.read_csv('../../uq67_scratch/bfiledata_steve/embedding_file/yh_gender_conf_10_embedding.csv', encoding='latin-1')
+Corpus = pd.read_csv('../../uq67_scratch/bfiledata_steve/embedding_file/yh_gender_conf_10_embedding_sm.csv.csv', encoding='latin-1')
 
 # using gender language  
 labelCol = np.where(Corpus['gender']=='F', 0, 1)
