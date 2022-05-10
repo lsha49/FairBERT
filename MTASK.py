@@ -23,7 +23,7 @@ from abroca import *
 
 # Corpus = pd.read_csv('../../uq67_scratch/bfiledata/Monash_fine_tune_test_embed.csv', encoding='latin-1')
 
-Corpus = pd.read_csv('../../uq67_scratch/bfiledata_steve/embedding_file/yh_gender_conf_10_embedding.csv', encoding='latin-1')
+Corpus = pd.read_csv('../../uq67_scratch/bfiledata_steve/embedding_file/yh_gender_conf_20_embedding.csv', encoding='latin-1')
 
 Corpus['gender'] = np.where(Corpus['gender']=='F', 0, 1)
 Corpus['home_language'] = np.where(Corpus['home_language'].str.contains('english', case=False), 1, 0) # native is 1
