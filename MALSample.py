@@ -43,7 +43,7 @@ from scipy.spatial import distance
 # forum_2021_lang_train_embed_bert_base
 # forum_2021_lang_unselected_sample
 Corpus = pd.read_csv('../../uq67_scratch/bfiledata/forum_2021_lang_train_embed_bert_base.csv', encoding='latin-1')
-selectSamplesGroup1 = 20000
+selectSamplesGroup1 = 30000
 selectSamplesGroup0 = 5000
 
 
