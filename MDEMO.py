@@ -18,9 +18,9 @@ from sklearn.cluster import KMeans
 from sklearn.linear_model import LogisticRegression
 
 
-Corpus = pd.read_csv('../../uq67_scratch/bfiledata/Monash_fine_tune_test_embed.csv', encoding='latin-1')
+# Corpus = pd.read_csv('../../uq67_scratch/bfiledata/Monash_fine_tune_test_embed.csv', encoding='latin-1')
 
-# Corpus = pd.read_csv('../../uq67_scratch/bfiledata_steve/embedding_file/yh_lang_conf_20_embedding_sm.csv', encoding='latin-1')
+Corpus = pd.read_csv('../../uq67_scratch/bfiledata_steve/embedding_file/yh_gender_conf_10_embedding.csv', encoding='latin-1')
 
 # using gender language  
 labelCol = np.where(Corpus['gender']=='F', 0, 1)
