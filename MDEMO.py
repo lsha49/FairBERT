@@ -20,7 +20,7 @@ from sklearn.linear_model import LogisticRegression
 
 # Corpus = pd.read_csv('../../uq67_scratch/bfiledata/Monash_fine_tune_test_embed.csv', encoding='latin-1')
 
-Corpus = pd.read_csv('../../uq67_scratch/bfiledata_steve/embedding_file/yh_gender_conf_10_embedding_sm.csv', encoding='latin-1')
+Corpus = pd.read_csv('../../uq67_scratch/bfiledata_steve/embedding_file/yh_gender_conf_30_embedding.csv', encoding='latin-1')
 
 # using gender language  
 labelCol = np.where(Corpus['gender']=='F', 0, 1)
@@ -32,7 +32,7 @@ Corpus.drop('label', inplace=True, axis=1)
 Corpus.drop('forum_message', inplace=True, axis=1)
 Corpus = Corpus.replace(np.nan, 0)
 
-Train_X, Test_X, Train_Y, Test_Y = model_selection.train_test_split(Corpus, labelCol, test_size=0.2, random_state=111)
+Train_X, Test_X, Train_Y, Test_Y = model_selection.train_test_split(Corpus, labelCol, test_size=0.2, random_state=11221)
 
 ### kmeans
 # kmeans = KMeans(n_clusters=2, random_state=0).fit(Train_X)
